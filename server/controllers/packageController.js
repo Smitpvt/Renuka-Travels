@@ -1,0 +1,303 @@
+import Package from '../models/Package.js';
+import AppError from '../utils/appError.js';
+import catchAsync from '../utils/catchAsync.js';
+import { uploadSingleImage } from '../utils/cloudinaryHelper.js';
+
+/**
+ * Public catalog listing: Returns only ACTIVE and NON-DELETED packages.
+ */
+export const getPublicPackages = catchAsync(async (req, res, next) => {
+  const packages = await Package.find({ active: true, isDeleted: { $ne: true } })
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    results: packages.length,
+    packages
+  });
+});
+
+/**
+ * Public single package details fetch by slug.
+ */
+export const getPackageBySlug = catchAsync(async (req, res, next) => {
+  const pkg = await Package.findOne({ slug: req.params.slug, active: true, isDeleted: { $ne: true } });
+
+  if (!pkg) {
+    return next(new AppError('No package found with that slug or it is inactive.', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    package: pkg
+  });
+});
+
+/**
+ * Admin management listing: Returns all NON-DELETED packages with pagination and search.
+ */
+export const getAdminPackages = catchAsync(async (req, res, next) => {
+  const { search, page = 1, limit = 10 } = req.query;
+
+  let query = { isDeleted: { $ne: true } };
+
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { category: { $regex: search, $options: 'i' } },
+      { desc: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const skip = (pageNum - 1) * limitNum;
+
+  const total = await Package.countDocuments(query);
+  const packages = await Package.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limitNum);
+
+  res.status(200).json({
+    success: true,
+    total,
+    page: pageNum,
+    pages: Math.ceil(total / limitNum),
+    packages
+  });
+});
+
+/**
+ * Creates a new package.
+ */
+export const createPackage = catchAsync(async (req, res, next) => {
+  // Parse fields
+  const {
+    title,
+    category,
+    duration,
+    desc,
+    featured,
+    active,
+    pricing,
+    highlights
+  } = req.body;
+
+  // Manual parsing for pricing object since it might come as form-data string or JSON object
+  let parsedPricing = {};
+  if (typeof pricing === 'string') {
+    try {
+      parsedPricing = JSON.parse(pricing);
+    } catch (e) {
+      return next(new AppError('Pricing field must be a valid JSON string.', 400));
+    }
+  } else {
+    parsedPricing = pricing || {};
+  }
+
+  // Parse highlights
+  let parsedHighlights = [];
+  if (highlights) {
+    if (typeof highlights === 'string') {
+      try {
+        parsedHighlights = JSON.parse(highlights);
+      } catch (e) {
+        // Fallback split by comma or line breaks if it is plain text
+        parsedHighlights = highlights.split('\n').map(h => h.trim()).filter(Boolean);
+      }
+    } else if (Array.isArray(highlights)) {
+      parsedHighlights = highlights;
+    }
+  }
+
+  // Image Upload Handling
+  if (!req.files || !req.files.image) {
+    return next(new AppError('Please upload a main package image.', 400));
+  }
+
+  // Upload main image
+  let imageUrl;
+  try {
+    imageUrl = await uploadSingleImage(req.files.image[0].buffer, 'renuka-tours/packages');
+  } catch (err) {
+    return next(new AppError(`Main Image Upload to Cloudinary Failed: ${err.message}`, 500));
+  }
+
+  // Upload gallery images
+  let galleryUrls = [];
+  if (req.files.gallery && req.files.gallery.length > 0) {
+    try {
+      galleryUrls = await Promise.all(
+        req.files.gallery.map(file => uploadSingleImage(file.buffer, 'renuka-tours/packages'))
+      );
+    } catch (err) {
+      return next(new AppError(`Gallery Images Upload to Cloudinary Failed: ${err.message}`, 500));
+    }
+  }
+
+  // Save to DB
+  const newPackage = await Package.create({
+    title,
+    category,
+    duration,
+    desc,
+    image: imageUrl,
+    gallery: galleryUrls,
+    featured: featured === 'true' || featured === true,
+    active: active !== 'false' && active !== false,
+    pricing: {
+      ac: parsedPricing.ac ? Number(parsedPricing.ac) : undefined,
+      nonAc: parsedPricing.nonAc ? Number(parsedPricing.nonAc) : undefined,
+      tollIncluded: parsedPricing.tollIncluded === 'true' || parsedPricing.tollIncluded === true,
+      customQuote: parsedPricing.customQuote === 'true' || parsedPricing.customQuote === true
+    },
+    highlights: parsedHighlights
+  });
+
+  res.status(201).json({
+    success: true,
+    package: newPackage
+  });
+});
+
+/**
+ * Updates an existing package.
+ */
+export const updatePackage = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const pkg = await Package.findById(id);
+
+  if (!pkg) {
+    return next(new AppError('No package found with that ID.', 404));
+  }
+
+  const {
+    title,
+    category,
+    duration,
+    desc,
+    featured,
+    active,
+    pricing,
+    highlights,
+    existingGallery // List of existing image URLs to keep (sent as string/array)
+  } = req.body;
+
+  // Parse pricing
+  let parsedPricing = {};
+  if (pricing) {
+    if (typeof pricing === 'string') {
+      try {
+        parsedPricing = JSON.parse(pricing);
+      } catch (e) {
+        return next(new AppError('Pricing field must be a valid JSON string.', 400));
+      }
+    } else {
+      parsedPricing = pricing;
+    }
+  }
+
+  // Parse highlights
+  let parsedHighlights;
+  if (highlights) {
+    if (typeof highlights === 'string') {
+      try {
+        parsedHighlights = JSON.parse(highlights);
+      } catch (e) {
+        parsedHighlights = highlights.split('\n').map(h => h.trim()).filter(Boolean);
+      }
+    } else if (Array.isArray(highlights)) {
+      parsedHighlights = highlights;
+    }
+  }
+
+  // Main Image Upload if provided
+  let imageUrl = pkg.image;
+  if (req.files && req.files.image && req.files.image.length > 0) {
+    try {
+      imageUrl = await uploadSingleImage(req.files.image[0].buffer, 'renuka-tours/packages');
+    } catch (err) {
+      return next(new AppError(`Main Image Upload to Cloudinary Failed: ${err.message}`, 500));
+    }
+  }
+
+  // Parse existing gallery images
+  let keptGallery = [];
+  if (existingGallery) {
+    if (typeof existingGallery === 'string') {
+      try {
+        keptGallery = JSON.parse(existingGallery);
+      } catch (e) {
+        keptGallery = [existingGallery];
+      }
+    } else if (Array.isArray(keptGallery)) {
+      keptGallery = existingGallery;
+    }
+  } else {
+    // If not supplied, keep everything
+    keptGallery = pkg.gallery;
+  }
+
+  // Upload new gallery images
+  let newGalleryUrls = [];
+  if (req.files && req.files.gallery && req.files.gallery.length > 0) {
+    try {
+      newGalleryUrls = await Promise.all(
+        req.files.gallery.map(file => uploadSingleImage(file.buffer, 'renuka-tours/packages'))
+      );
+    } catch (err) {
+      return next(new AppError(`Gallery Images Upload to Cloudinary Failed: ${err.message}`, 500));
+    }
+  }
+
+  // Merge gallery
+  const finalGallery = [...keptGallery, ...newGalleryUrls];
+
+  // Update properties
+  if (title) pkg.title = title;
+  if (category) pkg.category = category;
+  if (duration) pkg.duration = duration;
+  if (desc) pkg.desc = desc;
+  if (featured !== undefined) pkg.featured = featured === 'true' || featured === true;
+  if (active !== undefined) pkg.active = active === 'true' || active === true;
+  pkg.image = imageUrl;
+  pkg.gallery = finalGallery;
+  if (parsedHighlights) pkg.highlights = parsedHighlights;
+
+  if (pricing) {
+    pkg.pricing = {
+      ac: parsedPricing.ac ? Number(parsedPricing.ac) : undefined,
+      nonAc: parsedPricing.nonAc ? Number(parsedPricing.nonAc) : undefined,
+      tollIncluded: parsedPricing.tollIncluded === 'true' || parsedPricing.tollIncluded === true,
+      customQuote: parsedPricing.customQuote === 'true' || parsedPricing.customQuote === true
+    };
+  }
+
+  await pkg.save();
+
+  res.status(200).json({
+    success: true,
+    package: pkg
+  });
+});
+
+/**
+ * Soft deletes a package.
+ */
+export const deletePackage = catchAsync(async (req, res, next) => {
+  const pkg = await Package.findById(req.params.id);
+
+  if (!pkg) {
+    return next(new AppError('No package found with that ID.', 404));
+  }
+
+  pkg.isDeleted = true;
+  pkg.deletedAt = new Date();
+  await pkg.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Package soft-deleted successfully.'
+  });
+});
