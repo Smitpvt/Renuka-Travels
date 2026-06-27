@@ -70,7 +70,7 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-2 space-y-4">
+        <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Quick Links</h3>
           <ul className="space-y-2.5 text-xs text-slate-400 font-light">
             {['Home', 'Travel Packages', 'Our Fleet', 'About Us', 'Contact Support'].map((label, i) => {
@@ -86,19 +86,6 @@ export default function Footer() {
                 </li>
               );
             })}
-          </ul>
-        </div>
-
-        {/* Services / Solutions */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-2 space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Services</h3>
-          <ul className="space-y-2.5 text-xs text-slate-400 font-light">
-            {['Weekend Getaways', 'Corporate Employee Commute', 'Spiritual Pilgrimages', 'Destination Wedding Logistics', 'Custom Tour Packages'].map((svc, i) => (
-              <li key={i} className="flex items-center gap-2 hover:text-[#F97316] transition-colors duration-200 cursor-default">
-                <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-                <span>{svc}</span>
-              </li>
-            ))}
           </ul>
         </div>
 
@@ -128,7 +115,7 @@ export default function Footer() {
         {/* Location Map Column */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Location</h3>
-          <div className="overflow-hidden rounded-2xl border border-white/10 shadow-lg group h-48 md:h-[130px]">
+          <div className="overflow-hidden rounded-2xl border border-white/10 shadow-lg group aspect-video w-full">
             <iframe
               title="Renuka Travels Office Location"
               src={GOOGLE_MAPS_EMBED_URL}
