@@ -150,7 +150,7 @@ Thank you.`;
       </section>
 
       {/* Contact Details & Callback request Form */}
-      <section className="py-20 max-w-[1280px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <section className="py-12 md:py-20 max-w-[1280px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
         
         {/* Info Column */}
         <div className="space-y-8">
@@ -290,7 +290,7 @@ Thank you.`;
       </section>
 
       {/* FAQ Accordion Section */}
-      <section className="py-20 bg-slate-50 border-t border-slate-100">
+      <section className="py-12 md:py-20 bg-slate-50 border-t border-slate-100">
         <div className="max-w-[700px] mx-auto px-6 space-y-8">
           <div className="text-center space-y-2">
             <span className="text-[#F97316] font-bold text-xs uppercase tracking-widest">Questions</span>

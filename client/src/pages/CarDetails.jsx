@@ -200,7 +200,7 @@ Thank you.`;
       <Navbar />
 
       {/* Main Details Grid */}
-      <section className="pt-36 pb-20 max-w-[1280px] mx-auto px-6">
+      <section className="pt-28 md:pt-36 pb-12 md:pb-20 max-w-[1280px] mx-auto px-6">
         
         {/* Navigation Breadcrumb */}
         <div className="text-xs text-slate-400 mb-8 flex items-center gap-1.5">
@@ -398,7 +398,7 @@ Thank you.`;
               {vehicle.amenities && vehicle.amenities.length > 0 && (
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold text-[#1E293B] uppercase tracking-wider">On-Board Amenities</h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {vehicle.amenities.map((item, idx) => (
                       <div key={idx} className="flex gap-2 items-center text-xs text-slate-600 font-light">
                         <div className="w-4 h-4 rounded-full bg-orange-100 flex items-center justify-center text-[#F97316] text-[10px] font-bold flex-shrink-0">✓</div>

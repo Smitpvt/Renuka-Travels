@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { OFFICE_PHONE, OFFICE_EMAIL, OFFICE_ADDRESS, GOOGLE_MAPS_EMBED_URL } from '../constants/contact';
+import Logo from '../logo/Logo.jpg';
 
 const socialLinks = [
   {
@@ -49,8 +50,8 @@ export default function Footer() {
         
         {/* About & Socials */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-5">
-          <Link to="/" className="text-xl font-extrabold font-headings text-[#F97316] tracking-tight block">
-            Renuka Travels
+          <Link to="/" className="inline-block">
+            <img src={Logo} alt="Renuka Travels" className="h-9 w-auto object-contain bg-white px-2 py-1 rounded" />
           </Link>
           <p className="text-xs text-slate-400 leading-relaxed font-light">
             Delivering safe, comfortable, and dependable travel experiences through customized tours and professional transportation services since 2002.
@@ -108,19 +109,19 @@ export default function Footer() {
           <ul className="space-y-3.5 text-xs text-slate-400 font-light">
             <li className="flex items-start gap-2.5">
               <Phone size={14} className="text-[#F97316] mt-0.5 flex-shrink-0" />
-              <a href={`tel:${OFFICE_PHONE.replace(/\s+/g, '')}`} className="hover:text-[#F97316] transition-colors">
+              <a href={`tel:${OFFICE_PHONE.replace(/\s+/g, '')}`} className="hover:text-[#F97316] transition-colors break-words">
                 {OFFICE_PHONE}
               </a>
             </li>
             <li className="flex items-start gap-2.5">
               <Mail size={14} className="text-[#F97316] mt-0.5 flex-shrink-0" />
-              <a href={`mailto:${OFFICE_EMAIL}`} className="hover:text-[#F97316] transition-colors">
+              <a href={`mailto:${OFFICE_EMAIL}`} className="hover:text-[#F97316] transition-colors break-all">
                 {OFFICE_EMAIL}
               </a>
             </li>
             <li className="flex items-start gap-2.5">
               <MapPin size={16} className="text-[#F97316] mt-0.5 flex-shrink-0" />
-              <span className="leading-relaxed">{OFFICE_ADDRESS}</span>
+              <span className="leading-relaxed break-words">{OFFICE_ADDRESS}</span>
             </li>
           </ul>
         </div>

@@ -198,10 +198,12 @@ export default function PopularDestinations() {
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           transition={{ staggerChildren: 0.15 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="flex md:grid md:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-none pb-4 -mx-6 px-6 md:mx-0 md:px-0"
         >
           {featuredPackages.map((pkg) => (
-            <DestinationCard key={pkg.slug} pkg={pkg} />
+            <div key={pkg.slug} className="w-[82vw] sm:w-[350px] md:w-auto flex-shrink-0 snap-start">
+              <DestinationCard pkg={pkg} />
+            </div>
           ))}
         </motion.div>
       ) : (

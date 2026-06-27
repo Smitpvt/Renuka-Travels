@@ -227,7 +227,7 @@ Thank you.`;
           <span className="bg-[#F97316] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md mb-4">
             {pkg.category}
           </span>
-          <h1 className="text-4xl md:text-6xl font-extrabold font-headings drop-shadow-lg leading-tight max-w-4xl mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-headings drop-shadow-lg leading-tight max-w-4xl mb-4">
             {pkg.title}
           </h1>
           <span className="flex items-center gap-2 text-sm text-slate-200 drop-shadow-md">
@@ -342,7 +342,7 @@ Thank you.`;
                 <span className="text-[#F97316] font-bold text-xs uppercase tracking-widest">Safe & Secured</span>
                 <h3 className="text-lg font-bold font-headings text-[#1E293B] mt-1">Why Choose Renuka Travels</h3>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   { title: "Experienced Drivers", desc: "Safe driving on hills and highways.", icon: <Award size={18} /> },
                   { title: "Well Maintained Fleet", desc: "Spotless, sanitized, commercial certified.", icon: <ShieldCheck size={18} /> },

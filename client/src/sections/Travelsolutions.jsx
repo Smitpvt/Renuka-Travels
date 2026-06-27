@@ -56,7 +56,7 @@ const solutions = [
 
 export default function Travelsolutions() {
   return (
-    <section className="py-20 bg-[#FFF7ED]/35">
+    <section className="py-12 md:py-20 bg-[#FFF7ED]/35">
       <div className="max-w-[1280px] mx-auto px-6">
         
         {/* Section Header */}

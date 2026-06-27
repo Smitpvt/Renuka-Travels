@@ -40,7 +40,7 @@ export default function About() {
       </section>
 
       {/* Company Story & Mission/Vision */}
-      <section className="py-20 max-w-[1280px] mx-auto px-6 space-y-20">
+      <section className="py-12 md:py-20 max-w-[1280px] mx-auto px-6 space-y-12 md:space-y-20">
         
         {/* Story Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -120,7 +120,7 @@ export default function About() {
       <Travelsolutions />
 
       {/* Fleet Overview cards */}
-      <section className="py-20 max-w-[1280px] mx-auto px-6">
+      <section className="py-12 md:py-20 max-w-[1280px] mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="text-[#F97316] font-bold text-xs uppercase tracking-widest">Our Fleet</span>
           <h2 className="text-3xl font-bold font-headings text-[#1E293B] mt-1 mb-3">Managed Logistics Vehicles</h2>

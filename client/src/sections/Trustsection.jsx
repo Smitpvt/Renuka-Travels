@@ -38,17 +38,17 @@ const corporatePartners = [
 
 export default function Trustsection() {
   return (
-    <section className="py-10 bg-slate-50 border-y border-slate-100 overflow-hidden">
+    <section className="py-12 bg-transparent border-y border-slate-200/50 overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-6">
-        <p className="text-[10px] md:text-xs font-bold tracking-widest text-[#1E293B]/60 uppercase mb-8 text-center">
-          Trusted corporate mobility partner
+        <p className="text-[10px] md:text-xs font-bold tracking-widest text-[#1E293B]/50 uppercase mb-8 text-center">
+          Trusted Corporate Mobility Partner
         </p>
 
         {/* Marquee Container */}
         <div className="relative overflow-hidden w-full flex items-center">
           {/* Fading Edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#F8FAFC] to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#F8FAFC] to-transparent z-10 pointer-events-none"></div>
 
           <motion.div
             animate={{ x: ["0%", "-50%"] }}

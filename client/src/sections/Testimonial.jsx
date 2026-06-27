@@ -92,7 +92,7 @@ export default function Testimonial() {
             <Quote className="absolute right-8 top-8 w-12 h-12 text-[#F97316]/5 pointer-events-none" />
 
             {/* Slide Anim */}
-            <div className="relative min-h-[160px] md:min-h-[140px] flex items-center">
+            <div className="relative min-h-[210px] sm:min-h-[150px] md:min-h-[130px] flex items-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentIndex}
