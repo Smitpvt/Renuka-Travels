@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CTA from '../sections/CTA';
-import { Phone, Mail, MapPin, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, ChevronDown, ChevronUp, Compass, Briefcase, Users, Map, GraduationCap, Plane, Heart, Sliders } from 'lucide-react';
 import { api } from '../services/api';
 import { OFFICE_PHONE, OFFICE_EMAIL, OFFICE_ADDRESS, GOOGLE_MAPS_EMBED_URL, WHATSAPP_NUMBER } from '../constants/contact';
 
@@ -23,6 +23,57 @@ const faqs = [
   {
     question: 'Are your vehicles commercially licensed and insured?',
     answer: 'Absolutely. All our cars, SUVs, travellers, and buses carry valid commercial registration (yellow plates), comprehensive commercial passenger insurance, and up-to-date fitness certificates.'
+  }
+];
+
+const services = [
+  {
+    id: 'weekend-trips',
+    title: 'Weekend Trips',
+    shortDescription: 'Unwind with our curated weekend getaway travel plans.',
+    icon: Compass
+  },
+  {
+    id: 'corporate-travel',
+    title: 'Corporate Travel',
+    shortDescription: 'Professional employee commute and corporate trip coordination.',
+    icon: Briefcase
+  },
+  {
+    id: 'family-tours',
+    title: 'Family Tours',
+    shortDescription: 'Comfortable and memorable journeys for family vacations.',
+    icon: Users
+  },
+  {
+    id: 'pilgrimage-tours',
+    title: 'Pilgrimage Tours',
+    shortDescription: 'Dedicated transport to popular spiritual destinations.',
+    icon: Map
+  },
+  {
+    id: 'school-college-trips',
+    title: 'School & College Trips',
+    shortDescription: 'Safe and secure transport for educational tours.',
+    icon: GraduationCap
+  },
+  {
+    id: 'airport-transfers',
+    title: 'Airport Transfers',
+    shortDescription: 'Timely pick-ups and drops for all airport transfers.',
+    icon: Plane
+  },
+  {
+    id: 'wedding-transport',
+    title: 'Wedding Transport',
+    shortDescription: 'Coordinated premium fleets to manage wedding guest logistics.',
+    icon: Heart
+  },
+  {
+    id: 'custom-packages',
+    title: 'Custom Tour Packages',
+    shortDescription: 'Personalized itineraries tailored to your unique travel needs.',
+    icon: Sliders
   }
 ];
 
@@ -199,18 +250,7 @@ Thank you.`;
               </div>
             </div>
 
-            {/* Our Services */}
-            <div className="bg-white p-5 rounded-3xl border border-slate-100/70 shadow-sm space-y-3">
-              <h4 className="text-xs font-bold text-[#1E293B] uppercase tracking-wider">Our Services</h4>
-              <ul className="space-y-2 text-xs text-slate-500 font-light">
-                {['Weekend Getaways', 'Corporate Employee Commute', 'Spiritual Pilgrimages', 'Destination Wedding Logistics', 'Custom Tour Packages'].map((svc, i) => (
-                  <li key={i} className="flex items-center gap-2 hover:text-[#F97316] transition-colors duration-200 cursor-default">
-                    <span className="w-1 h-1 rounded-full bg-[#F97316] flex-shrink-0"></span>
-                    <span>{svc}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+
           </div>
 
           {/* Map Section */}
@@ -299,6 +339,46 @@ Thank you.`;
               <span>{isSubmitting ? 'Submitting Inquiry...' : 'Submit Inquiry via WhatsApp'}</span>
             </motion.button>
           </form>
+        </div>
+      </section>
+
+      {/* Services We Offer Section */}
+      <section className="py-12 md:py-20 bg-white border-t border-b border-slate-100/60">
+        <div className="max-w-[1280px] mx-auto px-6">
+          {/* Section Heading & Subtitle */}
+          <div className="text-center space-y-2 mb-12">
+            <span className="text-[#F97316] font-bold text-xs uppercase tracking-widest font-headings">What We Do</span>
+            <h2 className="text-3xl font-bold font-headings text-[#1E293B]">Services We Offer</h2>
+            <p className="text-xs text-slate-500 font-light max-w-lg mx-auto leading-relaxed">
+              Explore our range of premium transport solutions and custom tour packages tailored to your journey.
+            </p>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+            {services.map((service) => {
+              const Icon = service.icon;
+              return (
+                <div
+                  key={service.id}
+                  className="bg-white rounded-2xl border border-slate-200/60 p-6 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-default h-full"
+                >
+                  {/* Circular Icon Container */}
+                  <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-slate-500 group-hover:text-[#F97316] group-hover:bg-orange-100 transition-all duration-300 mb-4">
+                    <Icon size={20} className="transition-all duration-300" />
+                  </div>
+                  {/* Service Title */}
+                  <h3 className="font-headings font-bold text-sm text-[#1E293B] group-hover:text-[#F97316] transition-colors duration-300 mb-2">
+                    {service.title}
+                  </h3>
+                  {/* Short Description */}
+                  <p className="text-xs text-slate-500 font-light leading-relaxed">
+                    {service.shortDescription}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
