@@ -26,15 +26,15 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-[#0F172A] to-[#070A13] text-white/90 pt-12 md:pt-20 pb-8 md:pb-10 border-t border-slate-800/60 relative overflow-hidden">
-      <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-white/5">
+    <footer className="w-full max-w-full min-w-0 bg-gradient-to-b from-[#0F172A] to-[#070A13] text-white/90 pt-12 md:pt-20 pb-8 md:pb-10 border-t border-slate-800/60 relative overflow-hidden">
+      <div className="w-full max-w-[1280px] mx-auto px-6 flex flex-col md:grid md:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-white/5">
         
         {/* About & Socials */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-5">
+        <div className="w-full md:col-span-6 lg:col-span-3 space-y-5 min-w-0 max-w-full">
           <Link to="/" className="text-xl font-extrabold font-headings text-[#F97316] tracking-tight block">
             Renuka Travels
           </Link>
-          <p className="text-xs text-slate-400 leading-[1.7] font-light w-full max-w-full md:max-w-none break-words">
+          <p className="text-xs text-slate-400 leading-[1.7] font-light w-full max-w-full break-words [overflow-wrap:anywhere] md:max-w-none">
             Delivering safe, comfortable, and dependable travel experiences through customized tours and professional transportation services since 2002.
           </p>
           <div className="flex space-x-3 pt-2">
@@ -52,7 +52,7 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
+        <div className="w-full md:col-span-6 lg:col-span-3 space-y-4 min-w-0 max-w-full">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Quick Links</h3>
           <ul className="space-y-2.5 text-xs text-slate-400 font-light">
             {['Home', 'Travel Packages', 'Our Fleet', 'About Us', 'Contact Support'].map((label, i) => {
@@ -72,7 +72,7 @@ export default function Footer() {
         </div>
 
         {/* Contact Info */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
+        <div className="w-full md:col-span-6 lg:col-span-3 space-y-4 min-w-0 max-w-full">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Contact</h3>
           <ul className="space-y-3.5 text-xs text-slate-400 font-light">
             <li className="flex items-start gap-2.5 min-w-0 w-full">
@@ -101,13 +101,13 @@ export default function Footer() {
         </div>
 
         {/* Location Map Column */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
+        <div className="w-full md:col-span-6 lg:col-span-3 space-y-4 min-w-0 max-w-full">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Location</h3>
           <div className="relative w-full h-[230px] md:h-auto md:aspect-video overflow-hidden rounded-2xl border border-white/10 shadow-lg group mt-2">
             <iframe
               title="Renuka Travels Office Location"
               src={GOOGLE_MAPS_EMBED_URL}
-              className="absolute inset-0 w-full h-full group-hover:scale-[1.03] transition-transform duration-500 rounded-2xl"
+              className="w-full h-[230px] md:absolute md:inset-0 md:h-full md:w-full group-hover:scale-[1.03] transition-transform duration-500 rounded-2xl"
               style={{ border: 0, filter: 'grayscale(0.08) contrast(1.05)' }}
               loading="lazy"
               allowFullScreen=""
@@ -118,11 +118,11 @@ export default function Footer() {
       </div>
 
       {/* Footer Bottom */}
-      <div className="max-w-[1280px] mx-auto px-6 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-slate-500 font-light gap-4">
-        <p className="text-center md:text-left leading-relaxed">
+      <div className="w-full max-w-[1280px] mx-auto px-6 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-slate-500 font-light gap-4">
+        <p className="text-center md:text-left leading-relaxed w-full md:w-auto max-w-full break-words [overflow-wrap:anywhere]">
           © 2026 Renuka Travels. All rights reserved. Designed for Luxury Travel.
         </p>
-        <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">
+        <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 w-full md:w-auto max-w-full min-w-0">
           <a href="#" className="hover:text-slate-350 transition-colors">Privacy Policy</a>
           <a href="#" className="hover:text-slate-350 transition-colors">Terms of Service</a>
           <a href="#" className="hover:text-slate-350 transition-colors">Sitemap</a>
