@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Calendar,
   ChevronRight,
+  ChevronDown,
   CheckCircle2,
   Phone,
   ShieldCheck,
@@ -279,7 +280,7 @@ Thank you.`;
                 {pkg.desc}
               </p>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                 <div className="bg-[#F8FAFC] rounded-2xl p-4 border border-slate-100">
                   <span className="text-[10px] uppercase text-slate-400 font-bold">
                     Destination
@@ -455,33 +456,62 @@ Thank you.`;
                 <h4 className="text-xs font-bold text-[#1E293B] uppercase tracking-wider text-center">
                   Request Free Call Back
                 </h4>
-                <form onSubmit={handleCallbackSubmit} className="space-y-3">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Full Name"
-                    value={callbackData.name}
-                    onChange={(e) => setCallbackData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-[#F97316] outline-none"
-                  />
-                  <input
-                    type="tel"
-                    required
-                    placeholder="Phone Number"
-                    value={callbackData.phone}
-                    onChange={(e) => setCallbackData(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-[#F97316] outline-none"
-                  />
-                  <input
-                    type="date"
-                    required
-                    value={callbackData.date}
-                    onChange={(e) => setCallbackData(prev => ({ ...prev, date: e.target.value }))}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-[#F97316] outline-none"
-                  />
+                <form onSubmit={handleCallbackSubmit} className="space-y-4">
+                  <div className="space-y-1 text-left">
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Rahul Sharma"
+                      value={callbackData.name}
+                      onChange={(e) => setCallbackData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-2xl text-xs text-[#1E293B] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:bg-white transition-all min-h-[44px]"
+                    />
+                  </div>
+
+                  <div className="space-y-1 text-left">
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Phone Number</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="e.g. +91 98765 43210"
+                      value={callbackData.phone}
+                      onChange={(e) => setCallbackData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="w-full px-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-2xl text-xs text-[#1E293B] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:bg-white transition-all min-h-[44px]"
+                    />
+                  </div>
+
+                  <div className="space-y-1 text-left">
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Vehicle Preference</label>
+                    <div className="relative">
+                      <select
+                        value={priceType}
+                        onChange={(e) => setPriceType(e.target.value)}
+                        className="w-full px-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-2xl text-xs text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:bg-white transition-all min-h-[44px] appearance-none"
+                      >
+                        <option value="ac">Air Conditioned (AC)</option>
+                        <option value="nonac">Non Air Conditioned (Non-AC)</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                        <ChevronDown size={14} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 text-left">
+                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Travel Date</label>
+                    <input
+                      type="date"
+                      required
+                      value={callbackData.date}
+                      onChange={(e) => setCallbackData(prev => ({ ...prev, date: e.target.value }))}
+                      className="w-full px-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-2xl text-xs text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:bg-white transition-all min-h-[44px]"
+                    />
+                  </div>
+
                   <button
                     type="submit"
-                    className="w-full py-2.5 rounded-full border border-slate-200 hover:border-[#F97316] hover:text-[#F97316] text-xs font-bold transition-all text-center flex items-center justify-center gap-2"
+                    className="w-full py-3.5 mt-2 rounded-2xl bg-[#F97316] hover:bg-orange-600 text-white text-xs font-bold transition-all text-center flex items-center justify-center gap-2 shadow-sm min-h-[44px]"
                   >
                     <Phone size={12} />
                     <span>Inquire Call Back</span>

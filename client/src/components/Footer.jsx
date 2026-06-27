@@ -70,7 +70,7 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div className="col-span-6 md:col-span-3 lg:col-span-2 space-y-4">
+        <div className="col-span-12 md:col-span-6 lg:col-span-2 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Quick Links</h3>
           <ul className="space-y-2.5 text-xs text-slate-400 font-light">
             {['Home', 'Travel Packages', 'Our Fleet', 'About Us', 'Contact Support'].map((label, i) => {
@@ -90,7 +90,7 @@ export default function Footer() {
         </div>
 
         {/* Services / Solutions */}
-        <div className="col-span-6 md:col-span-3 lg:col-span-2 space-y-4">
+        <div className="col-span-12 md:col-span-6 lg:col-span-2 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Services</h3>
           <ul className="space-y-2.5 text-xs text-slate-400 font-light">
             {['Weekend Getaways', 'Corporate Employee Commute', 'Spiritual Pilgrimages', 'Destination Wedding Logistics', 'Custom Tour Packages'].map((svc, i) => (
@@ -103,7 +103,7 @@ export default function Footer() {
         </div>
 
         {/* Contact Info */}
-        <div className="col-span-12 md:col-span-6 lg:col-span-2 space-y-4">
+        <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Contact</h3>
           <ul className="space-y-3.5 text-xs text-slate-400 font-light">
             <li className="flex items-start gap-2.5">
@@ -128,14 +128,12 @@ export default function Footer() {
         {/* Location Map Column */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Location</h3>
-          <div className="overflow-hidden rounded-2xl border border-white/10 shadow-lg group">
+          <div className="overflow-hidden rounded-2xl border border-white/10 shadow-lg group h-48 md:h-[130px]">
             <iframe
               title="Renuka Travels Office Location"
               src={GOOGLE_MAPS_EMBED_URL}
-              width="100%"
-              height="130"
+              className="w-full h-full group-hover:scale-[1.03] transition-transform duration-500"
               style={{ border: 0, filter: 'grayscale(0.08) contrast(1.05)' }}
-              className="group-hover:scale-[1.03] transition-transform duration-500"
               loading="lazy"
               allowFullScreen=""
             />
