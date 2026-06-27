@@ -50,7 +50,7 @@ export default function Navbar() {
             to="/"
             className="text-lg md:text-xl font-extrabold font-headings text-[#1E293B] hover:text-[#F97316] transition-colors tracking-tight flex items-center gap-2"
           >
-            <span className="text-[#F97316]">🍊</span> Renuka Travels
+            <span className="text-[#F97316]"></span> Renuka Travels
           </Link>
 
           {/* Desktop Nav */}
