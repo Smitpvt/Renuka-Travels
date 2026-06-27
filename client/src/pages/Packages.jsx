@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CTA from '../sections/CTA';
+import SearchInput from '../components/SearchInput';
+import { fuseSearch } from '../utils/search';
 import { Calendar, Users, ChevronRight, RefreshCw, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 
 const categories = ['All', 'Weekend Trips', 'Pilgrimage', 'Family Tours', 'Corporate Tours'];
@@ -15,6 +17,42 @@ export default function Packages() {
   const [dbPackages, setDbPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // URL query parameter synchronization
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParam = searchParams.get('search') || '';
+  const [searchQuery, setSearchQuery] = useState(searchParam);
+  const [debouncedQuery, setDebouncedQuery] = useState(searchParam);
+
+  // Sync state when URL updates (e.g. back/forward button clicks)
+  useEffect(() => {
+    setSearchQuery(searchParam);
+  }, [searchParam]);
+
+  // Debounce search query to prevent lag on heavy list updates
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 250);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const handleQueryChange = (newQuery, shouldReplace = true) => {
+    setSearchQuery(newQuery);
+    if (newQuery) {
+      setSearchParams({ search: newQuery }, { replace: shouldReplace });
+    } else {
+      setSearchParams({}, { replace: shouldReplace });
+    }
+  };
+
+  const handleCommit = (query) => {
+    if (query) {
+      setSearchParams({ search: query }, { replace: false });
+    } else {
+      setSearchParams({}, { replace: false });
+    }
+  };
 
   const fetchPackages = async () => {
     setIsLoading(true);
@@ -33,13 +71,19 @@ export default function Packages() {
     fetchPackages();
   }, []);
 
+  // Filter packages using search query ranking and then by category
+  const searchFiltered = debouncedQuery
+    ? fuseSearch(dbPackages, debouncedQuery, ['title', 'category', 'duration', 'desc', 'highlights', 'destination'], 'title')
+    : dbPackages;
+
   const filteredPackages = selectedCat === 'All'
-    ? dbPackages
-    : dbPackages.filter(p => p.category === selectedCat);
+    ? searchFiltered
+    : searchFiltered.filter(p => p.category === selectedCat);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
       <Navbar />
+
 
       {/* Packages Hero */}
       <section className="relative pt-40 pb-20 bg-[#1E293B] text-white overflow-hidden">
@@ -91,6 +135,16 @@ export default function Packages() {
 
       {/* Packages Grid */}
       <section className="pb-24 max-w-[1280px] mx-auto px-6">
+        <SearchInput
+          value={searchQuery}
+          onQueryChange={handleQueryChange}
+          onCommit={handleCommit}
+          placeholder="Search packages by title, category, duration, highlights..."
+          data={dbPackages}
+          searchFields={['title', 'category', 'duration', 'desc', 'highlights', 'destination']}
+          primaryKey="title"
+        />
+
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map(i => (
@@ -238,9 +292,25 @@ export default function Packages() {
             ))}
           </motion.div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-200/60 shadow-sm">
-            <p className="text-sm text-slate-500 font-light">No packages found for this category.</p>
-          </div>
+          debouncedQuery ? (
+            <div className="text-center py-20 bg-white rounded-3xl border border-slate-200/60 shadow-sm max-w-md mx-auto space-y-4">
+              <AlertCircle className="mx-auto text-slate-400" size={48} />
+              <h3 className="text-lg font-bold font-headings text-slate-800">No packages found.</h3>
+              <p className="text-xs text-slate-500 font-light max-w-xs mx-auto leading-relaxed">
+                We couldn't find any packages matching "{debouncedQuery}". Try checking your spelling or clear the search.
+              </p>
+              <button
+                onClick={() => handleQueryChange('', false)}
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#F97316] text-white text-xs font-bold rounded-full hover:bg-orange-600 transition-colors shadow-md"
+              >
+                Clear Search
+              </button>
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-white rounded-3xl border border-slate-200/60 shadow-sm">
+              <p className="text-sm text-slate-500 font-light">No packages found for this category.</p>
+            </div>
+          )
         )}
       </section>
 
