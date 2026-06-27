@@ -44,7 +44,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-[#0F172A] to-[#070A13] text-white/90 pt-20 pb-10 border-t border-slate-800/60 relative overflow-hidden">
+    <footer className="bg-gradient-to-b from-[#0F172A] to-[#070A13] text-white/90 pt-12 md:pt-20 pb-8 md:pb-10 border-t border-slate-800/60 relative overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-white/5">
         
         {/* About & Socials */}
@@ -52,7 +52,7 @@ export default function Footer() {
           <Link to="/" className="text-xl font-extrabold font-headings text-[#F97316] tracking-tight block">
             Renuka Travels
           </Link>
-          <p className="text-xs text-slate-400 leading-relaxed font-light">
+          <p className="text-xs text-slate-400 leading-relaxed font-light w-full max-w-sm md:max-w-none break-words">
             Delivering safe, comfortable, and dependable travel experiences through customized tours and professional transportation services since 2002.
           </p>
           <div className="flex space-x-3 pt-2">
@@ -115,11 +115,11 @@ export default function Footer() {
         {/* Location Map Column */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Location</h3>
-          <div className="overflow-hidden rounded-2xl border border-white/10 shadow-lg group aspect-video w-full">
+          <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-lg group aspect-video mt-2">
             <iframe
               title="Renuka Travels Office Location"
               src={GOOGLE_MAPS_EMBED_URL}
-              className="w-full h-full group-hover:scale-[1.03] transition-transform duration-500"
+              className="absolute inset-0 w-full h-full group-hover:scale-[1.03] transition-transform duration-500 rounded-2xl"
               style={{ border: 0, filter: 'grayscale(0.08) contrast(1.05)' }}
               loading="lazy"
               allowFullScreen=""

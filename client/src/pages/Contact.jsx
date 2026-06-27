@@ -198,6 +198,19 @@ Thank you.`;
                 </p>
               </div>
             </div>
+
+            {/* Our Services */}
+            <div className="bg-white p-5 rounded-3xl border border-slate-100/70 shadow-sm space-y-3">
+              <h4 className="text-xs font-bold text-[#1E293B] uppercase tracking-wider">Our Services</h4>
+              <ul className="space-y-2 text-xs text-slate-500 font-light">
+                {['Weekend Getaways', 'Corporate Employee Commute', 'Spiritual Pilgrimages', 'Destination Wedding Logistics', 'Custom Tour Packages'].map((svc, i) => (
+                  <li key={i} className="flex items-center gap-2 hover:text-[#F97316] transition-colors duration-200 cursor-default">
+                    <span className="w-1 h-1 rounded-full bg-[#F97316] flex-shrink-0"></span>
+                    <span>{svc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Map Section */}
