@@ -34,7 +34,7 @@ export default function Footer() {
           <Link to="/" className="text-xl font-extrabold font-headings text-[#F97316] tracking-tight block">
             Renuka Travels
           </Link>
-          <p className="text-xs text-slate-400 leading-relaxed font-light w-full max-w-sm md:max-w-none break-words">
+          <p className="text-xs text-slate-400 leading-[1.7] font-light w-full max-w-full md:max-w-none break-words">
             Delivering safe, comfortable, and dependable travel experiences through customized tours and professional transportation services since 2002.
           </p>
           <div className="flex space-x-3 pt-2">
@@ -75,21 +75,27 @@ export default function Footer() {
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Contact</h3>
           <ul className="space-y-3.5 text-xs text-slate-400 font-light">
-            <li className="flex items-start gap-2.5">
+            <li className="flex items-start gap-2.5 min-w-0 w-full">
               <Phone size={14} className="text-[#F97316] mt-0.5 flex-shrink-0" />
-              <a href={`tel:${OFFICE_PHONE.replace(/\s+/g, '')}`} className="hover:text-[#F97316] transition-colors break-words">
-                {OFFICE_PHONE}
-              </a>
+              <div className="min-w-0 w-full break-words">
+                <a href={`tel:${OFFICE_PHONE.replace(/\s+/g, '')}`} className="hover:text-[#F97316] transition-colors">
+                  {OFFICE_PHONE}
+                </a>
+              </div>
             </li>
-            <li className="flex items-start gap-2.5">
+            <li className="flex items-start gap-2.5 min-w-0 w-full">
               <Mail size={14} className="text-[#F97316] mt-0.5 flex-shrink-0" />
-              <a href={`mailto:${OFFICE_EMAIL}`} className="hover:text-[#F97316] transition-colors break-all">
-                {OFFICE_EMAIL}
-              </a>
+              <div className="min-w-0 w-full break-all">
+                <a href={`mailto:${OFFICE_EMAIL}`} className="hover:text-[#F97316] transition-colors">
+                  {OFFICE_EMAIL}
+                </a>
+              </div>
             </li>
-            <li className="flex items-start gap-2.5">
+            <li className="flex items-start gap-2.5 min-w-0 w-full">
               <MapPin size={16} className="text-[#F97316] mt-0.5 flex-shrink-0" />
-              <span className="leading-relaxed break-words">{OFFICE_ADDRESS}</span>
+              <div className="min-w-0 w-full break-words leading-relaxed">
+                <span>{OFFICE_ADDRESS}</span>
+              </div>
             </li>
           </ul>
         </div>
@@ -97,7 +103,7 @@ export default function Footer() {
         {/* Location Map Column */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-[#F97316] font-headings">Our Location</h3>
-          <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-lg group aspect-video mt-2">
+          <div className="relative w-full h-[230px] md:h-auto md:aspect-video overflow-hidden rounded-2xl border border-white/10 shadow-lg group mt-2">
             <iframe
               title="Renuka Travels Office Location"
               src={GOOGLE_MAPS_EMBED_URL}
@@ -113,8 +119,10 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <div className="max-w-[1280px] mx-auto px-6 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-slate-500 font-light gap-4">
-        <p>© 2026 Renuka Travels. All rights reserved. Designed for Luxury Travel.</p>
-        <div className="flex space-x-6">
+        <p className="text-center md:text-left leading-relaxed">
+          © 2026 Renuka Travels. All rights reserved. Designed for Luxury Travel.
+        </p>
+        <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">
           <a href="#" className="hover:text-slate-350 transition-colors">Privacy Policy</a>
           <a href="#" className="hover:text-slate-350 transition-colors">Terms of Service</a>
           <a href="#" className="hover:text-slate-350 transition-colors">Sitemap</a>
