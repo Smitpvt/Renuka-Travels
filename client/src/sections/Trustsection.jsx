@@ -67,7 +67,7 @@ export default function Trustsection() {
                 <img
                   src={partner.logo}
                   alt={partner.name}
-                  className="h-10 md:h-12 w-auto object-contain filter grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
+                  className="h-10 md:h-12 w-auto object-contain hover:scale-105 transition-all duration-300 cursor-pointer"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
