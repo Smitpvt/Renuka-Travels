@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { OFFICE_PHONE, OFFICE_EMAIL, OFFICE_ADDRESS, GOOGLE_MAPS_EMBED_URL } from '../constants/contact';
-import Logo from '../logo/Logo.jpg';
 
 const socialLinks = [
   {
@@ -50,8 +49,8 @@ export default function Footer() {
         
         {/* About & Socials */}
         <div className="col-span-12 md:col-span-6 lg:col-span-3 space-y-5">
-          <Link to="/" className="inline-block">
-            <img src={Logo} alt="Renuka Travels" className="h-9 w-auto object-contain bg-white px-2 py-1 rounded" />
+          <Link to="/" className="text-xl font-extrabold font-headings text-[#F97316] tracking-tight block">
+            Renuka Travels
           </Link>
           <p className="text-xs text-slate-400 leading-relaxed font-light">
             Delivering safe, comfortable, and dependable travel experiences through customized tours and professional transportation services since 2002.

@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import Logo from '../logo/Logo.jpg';
 import { 
   Compass, 
   LayoutDashboard, 
@@ -83,7 +82,9 @@ export default function DashboardLayout() {
       <aside className="hidden lg:flex flex-col w-64 bg-[#1E293B] text-white flex-shrink-0 h-screen sticky top-0 shadow-xl z-20">
         {/* Brand */}
         <div className="h-16 px-6 border-b border-slate-700/50 flex items-center gap-3 bg-slate-900/40">
-          <img src={Logo} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white" />
+          <div className="w-8 h-8 bg-[#F97316] text-white rounded-lg flex items-center justify-center">
+            <Compass size={18} />
+          </div>
           <div>
             <h1 className="font-bold text-sm leading-tight font-headings tracking-wide">Renuka Travels</h1>
             <span className="text-[9px] text-[#F97316] uppercase font-bold tracking-widest leading-none block">Admin Panel</span>
@@ -147,7 +148,9 @@ export default function DashboardLayout() {
               {/* Brand Header */}
               <div className="h-16 px-6 border-b border-slate-700/50 flex items-center justify-between bg-slate-900/40">
                 <div className="flex items-center gap-3">
-                  <img src={Logo} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white" />
+                  <div className="w-8 h-8 bg-[#F97316] text-white rounded-lg flex items-center justify-center">
+                    <Compass size={18} />
+                  </div>
                   <div>
                     <h1 className="font-bold text-sm font-headings">Renuka Travels</h1>
                     <span className="text-[9px] text-[#F97316] uppercase font-bold tracking-widest leading-none block">Admin Panel</span>

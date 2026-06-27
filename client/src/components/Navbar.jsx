@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import Logo from "../logo/Logo.jpg";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -49,9 +48,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center"
+            className="text-lg md:text-xl font-extrabold font-headings text-[#1E293B] hover:text-[#F97316] transition-colors tracking-tight flex items-center gap-2"
           >
-            <img src={Logo} alt="Renuka Travels" className="h-8 md:h-10 w-auto object-contain" />
+            <span className="text-[#F97316]">🍊</span> Renuka Travels
           </Link>
 
           {/* Desktop Nav */}
