@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import connectDB from './config/db.js';
 import globalErrorHandler from './middleware/errorHandler.js';
 import AppError from './utils/appError.js';
@@ -16,6 +18,25 @@ import inquiryRoutes from './routes/inquiryRoutes.js';
 dotenv.config();
 
 const app = express();
+
+// Disable Express fingerprinting
+app.disable('x-powered-by');
+
+// Configure Helmet with sensible defaults
+app.use(helmet());
+
+// Admin Login Rate Limiting (15 minutes window, max 5 attempts)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    success: false,
+    message: 'Too many login attempts. Please try again after 15 minutes.'
+  },
+  skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 // Connect to MongoDB Atlas database
 connectDB();
@@ -58,9 +79,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Request body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Request body parsers with limits to prevent buffer overflow attacks
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 /**
  * Health Check Endpoint
@@ -74,7 +95,8 @@ app.get('/api/v1/health', (req, res) => {
   });
 });
 
-// Mount versioned API routes
+// Mount versioned API routes with admin login rate limiting
+app.use('/api/v1/auth/login', loginLimiter);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admins', adminRoutes);
 app.use('/api/v1/packages', packageRoutes);
