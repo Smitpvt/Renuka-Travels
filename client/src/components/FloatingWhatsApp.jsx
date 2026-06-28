@@ -1,12 +1,12 @@
 import React from 'react';
 import { WHATSAPP_NUMBER, DEFAULT_WHATSAPP_MESSAGE } from '../constants/contact';
 
-export default function FloatingWhatsApp({ visible }) {
+export default function FloatingWhatsApp({ visible = true }) {
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(DEFAULT_WHATSAPP_MESSAGE)}`;
 
   return (
     <div
-      className={`fixed z-50 flex items-center md:bottom-6 md:right-6 bottom-5 right-5 group transition-all duration-500 ${
+      className={`fixed z-[9999] flex items-center md:bottom-6 md:right-6 bottom-5 right-5 group transition-all duration-500 ${
         visible ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
       }`}
     >
