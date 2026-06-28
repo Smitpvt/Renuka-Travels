@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   ChevronRight,
@@ -23,7 +23,7 @@ const HERO_FALLBACK_IMAGE = '/images/renuka_fleet.png'; // Fallback background i
 
 const statsData = [
   {
-    value: '20+',
+    value: '24+',
     label: 'Years Experience',
     Icon: Award,
   },
@@ -44,8 +44,67 @@ const statsData = [
   },
 ];
 
+function HeroCounter({ value, trigger, duration = 1.5 }) {
+  const [count, setCount] = useState(0);
+
+  const match = value.match(/^(\d+)(.*)$/);
+  const target = match ? parseInt(match[1], 10) : 0;
+  const suffix = match ? match[2] : '';
+
+  useEffect(() => {
+    if (!trigger) return;
+    let start = 0;
+    const end = target;
+    const step = Math.max(Math.ceil(end / 30), 1);
+    const intervalTime = Math.max(Math.floor((duration * 1000) / (end / step)), 20);
+
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) {
+        clearInterval(timer);
+        setCount(end);
+      } else {
+        setCount(start);
+      }
+    }, intervalTime);
+
+    return () => clearInterval(timer);
+  }, [trigger, target, duration]);
+
+  return <span>{trigger ? count : 0}{suffix}</span>;
+}
+
 export default function Hero() {
   const isDarkMode = !!HERO_VIDEO_PATH;
+  const [startCount, setStartCount] = useState(false);
+  const statsContainerRef = useRef(null);
+
+  useEffect(() => {
+    const el = statsContainerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStartCount(true);
+          observer.unobserve(el);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.25,
+      }
+    );
+
+    observer.observe(el);
+
+    return () => {
+      if (el) {
+        observer.unobserve(el);
+        observer.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <section className={`relative min-h-[90vh] flex items-center pt-32 pb-16 overflow-hidden transition-colors duration-300 ${isDarkMode ? 'bg-slate-950' : 'bg-slate-50'}`}>
@@ -138,7 +197,7 @@ export default function Hero() {
           </div>
 
           {/* Stats */}
-          <div className={`grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t transition-colors duration-300 ${isDarkMode ? 'border-slate-800/30' : 'border-slate-200'}`}>
+          <div ref={statsContainerRef} className={`grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t transition-colors duration-300 ${isDarkMode ? 'border-slate-800/30' : 'border-slate-200'}`}>
             {statsData.map((stat, idx) => {
               const Icon = stat.Icon;
 
@@ -155,7 +214,7 @@ export default function Hero() {
                   </div>
 
                   <div className="text-xl font-extrabold text-[#1E293B]">
-                    {stat.value}
+                    <HeroCounter value={stat.value} trigger={startCount} />
                   </div>
 
                   <p className="text-[10px] uppercase tracking-widest text-slate-500 font-medium mt-1">
