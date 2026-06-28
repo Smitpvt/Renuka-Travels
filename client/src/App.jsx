@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Packages from './pages/Packages';
 import PackageDetails from './pages/PackageDetails';
@@ -7,6 +7,7 @@ import Cars from './pages/Cars';
 import CarDetails from './pages/CarDetails';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
 
 // Admin panel components & contexts
 import Login from './admin/Login';
@@ -15,11 +16,21 @@ import ProtectedRoute from './admin/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 
+function WhatsAppWrapper() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+
+  if (isAdminPage) return null;
+
+  return <FloatingWhatsApp />;
+}
+
 export default function App() {
   return (
     <ToastProvider>
       <AuthProvider>
         <Router>
+          <WhatsAppWrapper />
           <Routes>
             {/* Public Website Routes */}
             <Route path="/" element={<Home />} />
