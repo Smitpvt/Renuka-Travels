@@ -30,10 +30,20 @@ const packageSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A package must have a main image'],
     },
-    gallery: {
-      type: [String],
-      default: [],
-    },
+    gallery: [
+      {
+        image: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        title: {
+          type: String,
+          trim: true,
+          default: "",
+        },
+      },
+    ],
     featured: {
       type: Boolean,
       default: false,
@@ -78,6 +88,18 @@ const packageSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Pre-init hook to parse raw string gallery values to objects for backward compatibility
+packageSchema.pre('init', function (rawDoc) {
+  if (rawDoc && Array.isArray(rawDoc.gallery)) {
+    rawDoc.gallery = rawDoc.gallery.map((item) => {
+      if (typeof item === 'string') {
+        return { image: item, title: '' };
+      }
+      return item;
+    });
+  }
+});
 
 // Auto-slug generation before save
 packageSchema.pre('save', async function (next) {

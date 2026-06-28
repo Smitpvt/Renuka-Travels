@@ -324,16 +324,29 @@ Thank you.`;
               <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/55 shadow-sm space-y-4">
                 <h2 className="text-xl font-bold font-headings text-[#1E293B]">Destination Gallery</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {pkg.gallery.map((img, index) => (
-                    <div key={index} className="h-44 rounded-2xl overflow-hidden bg-slate-50">
-                      <img
-                        src={img}
-                        alt={`${pkg.title} Gallery ${index + 1}`}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&fit=crop'; }}
-                      />
-                    </div>
-                  ))}
+                  {pkg.gallery.map((item, index) => {
+                    const isObject = typeof item === 'object' && item !== null;
+                    const imageUrl = isObject ? item.image : item;
+                    const title = isObject ? item.title : '';
+
+                    return (
+                      <div key={index} className="flex flex-col">
+                        <div className="h-44 rounded-2xl overflow-hidden bg-slate-50">
+                          <img
+                            src={imageUrl}
+                            alt={title || `${pkg.title} Gallery ${index + 1}`}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&fit=crop'; }}
+                          />
+                        </div>
+                        {title && (
+                          <span className="text-center font-medium text-slate-800 text-sm mt-3 break-words">
+                            {title}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

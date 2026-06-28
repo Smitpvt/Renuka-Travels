@@ -51,9 +51,7 @@ export default function PackagesManager() {
   // Image Upload States
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
-  const [galleryFiles, setGalleryFiles] = useState([]);
-  const [galleryPreviews, setGalleryPreviews] = useState([]);
-  const [existingGallery, setExistingGallery] = useState([]);
+  const [galleryItems, setGalleryItems] = useState([]);
 
   const { showToast } = useToast();
 
@@ -95,9 +93,7 @@ export default function PackagesManager() {
     setHighlights(['']);
     setImageFile(null);
     setImagePreview('');
-    setGalleryFiles([]);
-    setGalleryPreviews([]);
-    setExistingGallery([]);
+    setGalleryItems([]);
     setSelectedId(null);
   };
 
@@ -123,7 +119,27 @@ export default function PackagesManager() {
     setActive(pkg.active !== false);
     setHighlights(pkg.highlights && pkg.highlights.length > 0 ? pkg.highlights : ['']);
     setImagePreview(pkg.image);
-    setExistingGallery(pkg.gallery || []);
+    
+    // Normalize gallery entries (supports string array and object array)
+    const normalizedGallery = (pkg.gallery || []).map((item, idx) => {
+      if (typeof item === 'object' && item !== null) {
+        return {
+          id: `exist-${idx}-${Math.random()}`,
+          file: null,
+          url: item.image,
+          title: item.title || '',
+          isExisting: true
+        };
+      }
+      return {
+        id: `exist-${idx}-${Math.random()}`,
+        file: null,
+        url: item,
+        title: '',
+        isExisting: true
+      };
+    });
+    setGalleryItems(normalizedGallery);
     setIsFormOpen(true);
   };
 
@@ -151,17 +167,40 @@ export default function PackagesManager() {
     }
   };
 
-  // Gallery multi-select preview
-  const handleGalleryChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      setGalleryFiles(files);
-      setGalleryPreviews(files.map(f => URL.createObjectURL(f)));
-    }
+  const addGalleryItem = () => {
+    setGalleryItems((prev) => [
+      ...prev,
+      {
+        id: `new-${Date.now()}-${Math.random()}`,
+        file: null,
+        url: '',
+        title: '',
+        isExisting: false
+      }
+    ]);
   };
 
-  const removeExistingGalleryImage = (urlToRemove) => {
-    setExistingGallery(existingGallery.filter(url => url !== urlToRemove));
+  const handleItemFileChange = (id, file) => {
+    if (!file) return;
+    setGalleryItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, file, url: URL.createObjectURL(file) }
+          : item
+      )
+    );
+  };
+
+  const handleItemTitleChange = (id, title) => {
+    setGalleryItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, title } : item
+      )
+    );
+  };
+
+  const removeGalleryItem = (id) => {
+    setGalleryItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   const handleFormSubmit = async (e) => {
@@ -193,14 +232,34 @@ export default function PackagesManager() {
       if (imageFile) {
         formData.append('image', imageFile);
       }
-      if (galleryFiles.length > 0) {
-        galleryFiles.forEach(file => {
+
+      // Build gallery structure and new files list
+      const newGalleryFiles = [];
+      const galleryStructure = [];
+
+      galleryItems.forEach(item => {
+        if (item.file) {
+          galleryStructure.push({
+            fileIndex: newGalleryFiles.length,
+            title: item.title || ''
+          });
+          newGalleryFiles.push(item.file);
+        } else if (item.isExisting && item.url) {
+          galleryStructure.push({
+            image: item.url,
+            title: item.title || ''
+          });
+        }
+      });
+
+      formData.append('galleryStructure', JSON.stringify(galleryStructure));
+      if (newGalleryFiles.length > 0) {
+        newGalleryFiles.forEach(file => {
           formData.append('gallery', file);
         });
       }
 
       if (formType === 'edit') {
-        formData.append('existingGallery', JSON.stringify(existingGallery));
         await api.updatePackage(selectedId, formData);
         showToast('Package updated successfully!', 'success');
       } else {
@@ -567,7 +626,7 @@ export default function PackagesManager() {
               </div>
 
               {/* Image upload */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 
                 {/* Main Package Image */}
                 <div className="space-y-3">
@@ -590,43 +649,68 @@ export default function PackagesManager() {
                   </div>
                 </div>
 
-                {/* Gallery Images */}
-                <div className="space-y-3">
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Gallery Images (Multiple)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleGalleryChange}
-                    className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-[#F97316] file:cursor-pointer hover:file:bg-orange-100"
-                  />
+                {/* Gallery Images with Editable Spot Names */}
+                <div className="space-y-4 pt-4 border-t border-slate-100">
+                  <div className="flex justify-between items-center">
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Destination Gallery (Editable Spot Names)</label>
+                  </div>
                   
-                  {/* Gallery items preview */}
-                  {(existingGallery.length > 0 || galleryPreviews.length > 0) && (
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {/* Show current gallery images with removal trigger */}
-                      {existingGallery.map((url, idx) => (
-                        <div key={`exist-${idx}`} className="relative group w-14 h-10 border border-slate-200 rounded-lg overflow-hidden">
-                          <img src={url} alt="" className="w-full h-full object-cover" />
-                          <button
-                            type="button"
-                            onClick={() => removeExistingGalleryImage(url)}
-                            className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"
-                          >
-                            <Trash size={10} />
-                          </button>
-                        </div>
-                      ))}
+                  <div className="space-y-3">
+                    {galleryItems.map((item, idx) => (
+                      <div key={item.id} className="p-4 border border-slate-200 rounded-2xl bg-slate-50/50 space-y-3 relative group">
+                        {/* Remove Button */}
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryItem(item.id)}
+                          className="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors"
+                          title="Remove Spot"
+                        >
+                          <Trash size={16} />
+                        </button>
 
-                      {/* Show local previews */}
-                      {galleryPreviews.map((url, idx) => (
-                        <div key={`new-${idx}`} className="w-14 h-10 border border-slate-200 border-dashed rounded-lg overflow-hidden relative">
-                          <img src={url} alt="" className="w-full h-full object-cover opacity-60" />
-                          <span className="absolute bottom-0 right-0 bg-[#F97316] text-[7px] text-white font-bold px-1 rounded-tl">New</span>
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center pr-6">
+                          {/* Image Upload/Preview */}
+                          <div className="md:col-span-6 flex items-center gap-3">
+                            <div className="w-16 h-12 border border-slate-200 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 flex items-center justify-center">
+                              {item.url ? (
+                                <img src={item.url} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="text-[10px] text-slate-400">No Image</span>
+                              )}
+                            </div>
+                            
+                            <div className="flex-1">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleItemFileChange(item.id, e.target.files[0])}
+                                className="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-orange-50 file:text-[#F97316] file:cursor-pointer hover:file:bg-orange-100"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Spot Name */}
+                          <div className="md:col-span-6 space-y-1">
+                            <input
+                              type="text"
+                              placeholder="Spot Name (e.g. Murud Beach)"
+                              value={item.title}
+                              onChange={(e) => handleItemTitleChange(item.id, e.target.value)}
+                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-[#1E293B] focus:outline-none focus:ring-1 focus:ring-[#F97316]"
+                            />
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={addGalleryItem}
+                    className="py-2 px-4 rounded-xl border border-dashed border-[#F97316] text-[#F97316] hover:bg-orange-50/50 text-xs font-bold transition-all duration-300 flex items-center gap-1.5"
+                  >
+                    <span>+ Add Another Spot</span>
+                  </button>
                 </div>
               </div>
 

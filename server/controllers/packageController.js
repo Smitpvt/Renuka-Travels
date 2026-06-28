@@ -136,6 +136,33 @@ export const createPackage = catchAsync(async (req, res, next) => {
     }
   }
 
+  // Map gallery images and titles based on galleryStructure
+  const { galleryStructure } = req.body;
+  let finalGallery = [];
+  if (galleryStructure) {
+    let parsedStructure = [];
+    try {
+      parsedStructure = JSON.parse(galleryStructure);
+    } catch (e) {
+      return next(new AppError('Gallery structure field must be a valid JSON string.', 400));
+    }
+
+    finalGallery = parsedStructure.map(item => {
+      if (item.fileIndex !== undefined) {
+        return {
+          image: galleryUrls[item.fileIndex],
+          title: item.title ? item.title.trim() : ''
+        };
+      }
+      return {
+        image: item.image,
+        title: item.title ? item.title.trim() : ''
+      };
+    });
+  } else {
+    finalGallery = galleryUrls.map(url => ({ image: url, title: '' }));
+  }
+
   // Save to DB
   const newPackage = await Package.create({
     title,
@@ -143,7 +170,7 @@ export const createPackage = catchAsync(async (req, res, next) => {
     duration,
     desc,
     image: imageUrl,
-    gallery: galleryUrls,
+    gallery: finalGallery,
     featured: featured === 'true' || featured === true,
     active: active !== 'false' && active !== false,
     pricing: {
@@ -251,8 +278,41 @@ export const updatePackage = catchAsync(async (req, res, next) => {
     }
   }
 
-  // Merge gallery
-  const finalGallery = [...keptGallery, ...newGalleryUrls];
+  // Merge/rebuild gallery structure
+  const { galleryStructure } = req.body;
+  let finalGallery = [];
+
+  if (galleryStructure) {
+    let parsedStructure = [];
+    try {
+      parsedStructure = JSON.parse(galleryStructure);
+    } catch (e) {
+      return next(new AppError('Gallery structure field must be a valid JSON string.', 400));
+    }
+
+    finalGallery = parsedStructure.map(item => {
+      if (item.fileIndex !== undefined) {
+        return {
+          image: newGalleryUrls[item.fileIndex],
+          title: item.title ? item.title.trim() : ''
+        };
+      }
+      return {
+        image: item.image,
+        title: item.title ? item.title.trim() : ''
+      };
+    });
+  } else {
+    // Backward compatibility fallback: normalize whatever is in keptGallery and newGalleryUrls to objects
+    const normalizedKept = keptGallery.map(item => {
+      if (typeof item === 'object' && item !== null) {
+        return { image: item.image, title: item.title || '' };
+      }
+      return { image: item, title: '' };
+    });
+    const normalizedNew = newGalleryUrls.map(url => ({ image: url, title: '' }));
+    finalGallery = [...normalizedKept, ...normalizedNew];
+  }
 
   // Update properties
   if (title) pkg.title = title;
