@@ -138,6 +138,7 @@ export const createPackage = catchAsync(async (req, res, next) => {
 
   // Map gallery images and titles based on galleryStructure
   const { galleryStructure } = req.body;
+  console.log('[DEBUG CONTROLLER] Received galleryStructure in createPackage:', galleryStructure);
   let finalGallery = [];
   if (galleryStructure) {
     let parsedStructure = [];
@@ -162,6 +163,8 @@ export const createPackage = catchAsync(async (req, res, next) => {
   } else {
     finalGallery = galleryUrls.map(url => ({ image: url, title: '' }));
   }
+
+  console.log('[DEBUG CONTROLLER] finalGallery reconstructed in createPackage:', JSON.stringify(finalGallery, null, 2));
 
   // Save to DB
   const newPackage = await Package.create({
@@ -280,6 +283,7 @@ export const updatePackage = catchAsync(async (req, res, next) => {
 
   // Merge/rebuild gallery structure
   const { galleryStructure } = req.body;
+  console.log('[DEBUG CONTROLLER] Received galleryStructure in updatePackage:', galleryStructure);
   let finalGallery = [];
 
   if (galleryStructure) {
@@ -313,6 +317,8 @@ export const updatePackage = catchAsync(async (req, res, next) => {
     const normalizedNew = newGalleryUrls.map(url => ({ image: url, title: '' }));
     finalGallery = [...normalizedKept, ...normalizedNew];
   }
+
+  console.log('[DEBUG CONTROLLER] finalGallery reconstructed in updatePackage:', JSON.stringify(finalGallery, null, 2));
 
   // Update properties
   if (title) pkg.title = title;

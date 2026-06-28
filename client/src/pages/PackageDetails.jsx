@@ -325,6 +325,7 @@ Thank you.`;
                 <h2 className="text-xl font-bold font-headings text-[#1E293B]">Destination Gallery</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {pkg.gallery.map((item, index) => {
+                    console.log(`[DEBUG RENDER] gallery item at index ${index}:`, JSON.stringify(item));
                     const isObject = typeof item === 'object' && item !== null;
                     const imageUrl = isObject ? item.image : item;
                     const title = isObject ? item.title : '';

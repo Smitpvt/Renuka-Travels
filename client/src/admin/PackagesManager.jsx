@@ -192,6 +192,7 @@ export default function PackagesManager() {
   };
 
   const handleItemTitleChange = (id, title) => {
+    console.log(`[DEBUG UI] Spot name changed for item ${id} to: "${title}"`);
     setGalleryItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, title } : item
@@ -208,6 +209,7 @@ export default function PackagesManager() {
     setIsSubmitLoading(true);
 
     try {
+      console.log('[DEBUG FORM SUBMIT] current galleryItems state:', JSON.stringify(galleryItems, null, 2));
       const formData = new FormData();
       formData.append('title', title);
       formData.append('category', category);
@@ -251,6 +253,9 @@ export default function PackagesManager() {
           });
         }
       });
+
+      console.log('[DEBUG FORM SUBMIT] constructed galleryStructure:', JSON.stringify(galleryStructure, null, 2));
+      console.log('[DEBUG FORM SUBMIT] new files count:', newGalleryFiles.length);
 
       formData.append('galleryStructure', JSON.stringify(galleryStructure));
       if (newGalleryFiles.length > 0) {
