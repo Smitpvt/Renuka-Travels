@@ -6,7 +6,7 @@ export default function FloatingWhatsApp({ visible = true }) {
 
   return (
     <div
-      className={`fixed z-[9999] flex items-center md:bottom-6 md:right-6 bottom-5 right-5 group transition-all duration-500 ${
+      className={`fixed z-50 flex flex-col items-center md:bottom-6 md:right-6 bottom-5 right-5 transition-all duration-500 ${
         visible ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
       }`}
     >
@@ -27,8 +27,8 @@ export default function FloatingWhatsApp({ visible = true }) {
         }
       `}</style>
 
-      {/* Floating Tooltip (Desktop Only) */}
-      <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 hidden md:block bg-white text-slate-800 text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg border border-slate-100 opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none select-none">
+      {/* Permanent Label (Desktop Only) */}
+      <div className="hidden md:block bg-white text-slate-800 text-sm font-medium px-4 py-2 rounded-full shadow-md border border-slate-100 mb-2 select-none text-center">
         Chat with us
       </div>
 
@@ -38,7 +38,7 @@ export default function FloatingWhatsApp({ visible = true }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="w-[54px] h-[54px] md:w-[60px] md:h-[60px] rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 animate-whatsapp-entrance"
+        className="w-[54px] h-[54px] md:w-[60px] md:h-[60px] rounded-full bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 animate-whatsapp-entrance"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
