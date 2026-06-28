@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, MapPin, Clock, Users, Car, Landmark, FileText } from 'lucide-react';
+import { MapPin, Clock, Users, Car, Landmark, FileText } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { WHATSAPP_NUMBER } from '../constants/contact';
 
 export default function CustomPackageBuilder() {
@@ -211,7 +212,7 @@ Thank you.`;
                   type="submit"
                   className="w-full bg-[#F97316] text-white py-3.5 rounded-xl text-xs font-bold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  <Send size={12} />
+                  <FaWhatsapp size={12} />
                   <span>Generate Customized WhatsApp Quote</span>
                 </motion.button>
               </form>

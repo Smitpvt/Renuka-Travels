@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, Car, Compass } from 'lucide-react';
+import { Calendar, MapPin, Car } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import Fuse from "fuse.js";
 import { City } from "country-state-city";
 import { api } from '../services/api';
@@ -242,7 +243,7 @@ Thank you.`;
           type="submit"
           className="w-full bg-[#F97316] text-white py-4 rounded-2xl text-sm font-bold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
         >
-          <Compass size={16} />
+          <FaWhatsapp size={16} />
           <span>Inquire on WhatsApp</span>
         </motion.button>
       </form>

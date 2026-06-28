@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Phone, MessageSquare } from 'lucide-react';
+import { Phone } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 
 import { WHATSAPP_NUMBER, OFFICE_PHONE } from '../constants/contact';
 
@@ -47,7 +48,7 @@ Thank you.`;
             rel="noopener noreferrer"
             className="bg-[#F97316] hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold text-xs flex items-center justify-center space-x-2 transition-all duration-300 shadow-lg shadow-orange-500/10 hover:shadow-orange-500/20"
           >
-            <MessageSquare size={14} />
+            <FaWhatsapp size={14} />
             <span>WhatsApp Us</span>
           </motion.a>
 

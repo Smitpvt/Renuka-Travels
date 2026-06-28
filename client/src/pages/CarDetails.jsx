@@ -8,7 +8,6 @@ import {
   ChevronDown,
   Check, 
   Phone, 
-  MessageSquare,
   ShieldAlert,
   Sliders,
   Calendar,
@@ -16,6 +15,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { api } from '../services/api';
@@ -416,7 +416,7 @@ Thank you.`;
                   onClick={handleWhatsAppInquiry}
                   className="w-full py-3.5 rounded-full bg-[#F97316] hover:bg-orange-600 text-white font-bold text-xs transition-colors duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                 >
-                  <MessageSquare size={14} />
+                  <FaWhatsapp size={14} />
                   <span>Inquire on WhatsApp</span>
                 </button>
               </div>

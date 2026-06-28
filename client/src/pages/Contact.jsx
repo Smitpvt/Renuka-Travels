@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CTA from '../sections/CTA';
-import { Phone, Mail, MapPin, Send, ChevronDown, ChevronUp, Compass, Briefcase, Users, Map, GraduationCap, Plane, Heart, Sliders } from 'lucide-react';
+import { Phone, Mail, MapPin, ChevronDown, ChevronUp, Compass, Briefcase, Users, Map, GraduationCap, Plane, Heart, Sliders } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { api } from '../services/api';
 import { OFFICE_PHONE, OFFICE_EMAIL, OFFICE_ADDRESS, GOOGLE_MAPS_EMBED_URL, WHATSAPP_NUMBER } from '../constants/contact';
 
@@ -335,7 +336,7 @@ Thank you.`;
               disabled={isSubmitting}
               className="w-full bg-[#F97316] hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs flex items-center justify-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg"
             >
-              <Send size={12} />
+              <FaWhatsapp size={12} />
               <span>{isSubmitting ? 'Submitting Inquiry...' : 'Submit Inquiry via WhatsApp'}</span>
             </motion.button>
           </form>
