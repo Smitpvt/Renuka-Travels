@@ -360,10 +360,10 @@ Thank you.`;
                     </div>
                     
                     <div className="border-t border-orange-100/60 pt-2 space-y-1 text-slate-500 text-[10px] font-light">
-                      {vehicle.pricing?.minimumKm > 0 && (
+                      {(vehicle.pricing?.permit > 0 || vehicle.pricing?.minimumKm > 0) && (
                         <div className="flex justify-between">
-                          <span>Min Limit per Day:</span>
-                          <span className="font-semibold text-[#1E293B]">{vehicle.pricing.minimumKm} KM</span>
+                          <span>Permit:</span>
+                          <span className="font-semibold text-[#1E293B]">{vehicle.pricing.permit !== undefined ? vehicle.pricing.permit : vehicle.pricing.minimumKm} KM</span>
                         </div>
                       )}
                       {vehicle.pricing?.driverAllowance > 0 && (

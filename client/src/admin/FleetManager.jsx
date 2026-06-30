@@ -158,7 +158,7 @@ export default function FleetManager() {
     setPricingNonAc(vehicle.pricing?.nonAc !== undefined ? vehicle.pricing.nonAc : '');
     setPricingLabel(vehicle.pricing?.label || 'Per KM');
     setPricingDescription(vehicle.pricing?.description || '');
-    setPricingMinimumKm(vehicle.pricing?.minimumKm !== undefined ? vehicle.pricing.minimumKm : '300');
+    setPricingPermit(vehicle.pricing?.permit !== undefined ? vehicle.pricing.permit : (vehicle.pricing?.minimumKm !== undefined ? vehicle.pricing.minimumKm : '300'));
     setPricingDriverAllowance(vehicle.pricing?.driverAllowance !== undefined ? vehicle.pricing.driverAllowance : '500');
     setPricingTollIncluded(!!vehicle.pricing?.tollIncluded);
     setPricingParkingIncluded(!!vehicle.pricing?.parkingIncluded);
@@ -283,7 +283,7 @@ export default function FleetManager() {
         nonAc: pricingNonAc ? Number(pricingNonAc) : 0,
         label: pricingLabel,
         description: pricingDescription,
-        minimumKm: pricingMinimumKm ? Number(pricingMinimumKm) : 300,
+        permit: pricingPermit ? Number(pricingPermit) : 300,
         driverAllowance: pricingDriverAllowance ? Number(pricingDriverAllowance) : 500,
         tollIncluded: pricingTollIncluded,
         parkingIncluded: pricingParkingIncluded
@@ -707,11 +707,11 @@ export default function FleetManager() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Minimum KM Limit</label>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Permit</label>
                       <input
                         type="number"
-                        value={pricingMinimumKm}
-                        onChange={(e) => setPricingMinimumKm(e.target.value)}
+                        value={pricingPermit}
+                        onChange={(e) => setPricingPermit(e.target.value)}
                         placeholder="e.g. 300"
                         className="w-full px-4 py-2.5 border border-slate-200 rounded-2xl text-xs bg-white focus:ring-2 focus:ring-[#F97316] outline-none"
                       />
