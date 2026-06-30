@@ -19,6 +19,12 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { api } from '../services/api';
 import { WHATSAPP_NUMBER } from '../constants/contact';
+import StructuredData from '../components/StructuredData';
+import {
+  generateWebPageSchema,
+  generatePackageSchema,
+  generateBreadcrumbSchema
+} from '../utils/schemaGenerator';
 import Hero1 from '../heros/Hero1.jpg';
 import Hero2 from '../heros/Hero2.jpg';
 import Hero3 from '../heros/Hero3.jpg';
@@ -36,6 +42,32 @@ export default function PackageDetails() {
     phone: '',
     date: ''
   });
+
+  const origin = window.location.origin;
+  const url = window.location.href;
+
+  const webpageSchema = pkg
+    ? generateWebPageSchema(
+        'ItemPage',
+        url,
+        `${pkg.title.trim()} | Renuka Travels`,
+        pkg.desc || `Book the ${pkg.title.trim()} travel package with Renuka Travels. Safe, comfortable, and well-planned private tours.`
+      )
+    : null;
+
+  const packageSchema = pkg
+    ? generatePackageSchema(pkg, origin)
+    : null;
+
+  const breadcrumbSchema = pkg
+    ? generateBreadcrumbSchema([
+        { name: 'Home', item: `${origin}/` },
+        { name: 'Packages', item: `${origin}/packages` },
+        { name: pkg.title.trim(), item: url }
+      ])
+    : null;
+
+  const schemas = [webpageSchema, packageSchema, breadcrumbSchema].filter(Boolean);
 
   const fetchPackage = async () => {
     setIsLoading(true);
@@ -213,6 +245,7 @@ Thank you.`;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
+      <StructuredData data={schemas} />
       <Navbar />
 
       {/* Hero Banner */}

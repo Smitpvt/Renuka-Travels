@@ -8,10 +8,32 @@ import SearchInput from '../components/SearchInput';
 import { fuseSearch } from '../utils/search';
 import { Calendar, Users, ChevronRight, RefreshCw, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
+import StructuredData from '../components/StructuredData';
+import {
+  generateWebPageSchema,
+  generateBreadcrumbSchema
+} from '../utils/schemaGenerator';
 
 const categories = ['All', 'Weekend Trips', 'Pilgrimage', 'Family Tours', 'Corporate Tours'];
 
 export default function Packages() {
+  const origin = window.location.origin;
+  const url = window.location.href;
+
+  const webpageSchema = generateWebPageSchema(
+    'CollectionPage',
+    url,
+    'Tour Packages | Renuka Travels | Premium Travel & Car Rentals Maharashtra',
+    "Explore our curated travel solutions designed to provide ultimate passenger comfort across Maharashtra's finest sites."
+  );
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', item: `${origin}/` },
+    { name: 'Packages', item: url }
+  ]);
+
+  const schemas = [webpageSchema, breadcrumbSchema];
+
   const [selectedCat, setSelectedCat] = useState('All');
   const [priceType, setPriceType] = useState("ac");
   const [dbPackages, setDbPackages] = useState([]);
@@ -82,6 +104,7 @@ export default function Packages() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
+      <StructuredData data={schemas} />
       <Navbar />
 
 

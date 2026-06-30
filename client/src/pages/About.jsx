@@ -6,10 +6,36 @@ import CTA from '../sections/CTA';
 import Travelsolutions from '../sections/Travelsolutions';
 import { Check, Target, Compass, Award, CheckCircle2, ChevronRight } from 'lucide-react';
 import { Link } from "react-router-dom";
+import StructuredData from '../components/StructuredData';
+import {
+  generateWebPageSchema,
+  generateOrganizationSchema,
+  generateBreadcrumbSchema
+} from '../utils/schemaGenerator';
 
 export default function About() {
+  const origin = window.location.origin;
+  const url = window.location.href;
+
+  const webpageSchema = generateWebPageSchema(
+    'AboutPage',
+    url,
+    'About Renuka Travels | Premium Travel & Car Rentals Maharashtra',
+    'Established in 2002, Renuka Travels has been providing reliable transportation solutions and tour packages across Maharashtra.'
+  );
+
+  const organizationSchema = generateOrganizationSchema(origin);
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', item: `${origin}/` },
+    { name: 'About Us', item: url }
+  ]);
+
+  const schemas = [webpageSchema, organizationSchema, breadcrumbSchema];
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
+      <StructuredData data={schemas} />
       <Navbar />
 
       {/* About Hero */}

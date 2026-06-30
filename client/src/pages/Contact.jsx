@@ -7,6 +7,12 @@ import { Phone, Mail, MapPin, ChevronDown, ChevronUp, Compass, Briefcase, Users,
 import { FaWhatsapp } from 'react-icons/fa';
 import { api } from '../services/api';
 import { OFFICE_PHONE, OFFICE_EMAIL, OFFICE_ADDRESS, GOOGLE_MAPS_EMBED_URL, WHATSAPP_NUMBER } from '../constants/contact';
+import StructuredData from '../components/StructuredData';
+import {
+  generateWebPageSchema,
+  generateFAQSchema,
+  generateBreadcrumbSchema
+} from '../utils/schemaGenerator';
 
 const faqs = [
   {
@@ -107,6 +113,25 @@ function FAQItem({ faq }) {
 }
 
 export default function Contact() {
+  const origin = window.location.origin;
+  const url = window.location.href;
+
+  const webpageSchema = generateWebPageSchema(
+    'ContactPage',
+    url,
+    'Contact Us | Renuka Travels | Premium Travel & Car Rentals Maharashtra',
+    'Get in touch with Renuka Travels. Rent premium SUVs, tempo travellers, and luxury coaches for outstation tours, weddings, or corporate rentals.'
+  );
+
+  const faqSchema = generateFAQSchema(faqs);
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', item: `${origin}/` },
+    { name: 'Contact Us', item: url }
+  ]);
+
+  const schemas = [webpageSchema, faqSchema, breadcrumbSchema];
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -172,6 +197,7 @@ Thank you.`;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
+      <StructuredData data={schemas} />
       <Navbar />
 
       {/* Contact Hero */}

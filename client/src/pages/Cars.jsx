@@ -8,6 +8,11 @@ import { fuseSearch } from '../utils/search';
 import { motion } from 'framer-motion';
 import { ChevronRight, ShieldCheck, HelpCircle, RefreshCw, AlertCircle } from 'lucide-react';
 import { WHATSAPP_NUMBER } from '../constants/contact';
+import StructuredData from '../components/StructuredData';
+import {
+  generateWebPageSchema,
+  generateBreadcrumbSchema
+} from '../utils/schemaGenerator';
 
 const categoryTabs = [
   { id: 'all', label: 'All Vehicles' },
@@ -17,6 +22,23 @@ const categoryTabs = [
 ];
 
 export default function Cars() {
+  const origin = window.location.origin;
+  const url = window.location.href;
+
+  const webpageSchema = generateWebPageSchema(
+    'CollectionPage',
+    url,
+    'Our Premium Fleet | Renuka Travels | Premium Travel & Car Rentals Maharashtra',
+    'Choose from our premium range of Sedans, SUVs, Tempo Travellers, and Luxury Buses designed for comfort and safety.'
+  );
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', item: `${origin}/` },
+    { name: 'Vehicles', item: url }
+  ]);
+
+  const schemas = [webpageSchema, breadcrumbSchema];
+
   const [selectedTab, setSelectedTab] = useState('all');
   const [dbVehicles, setDbVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,6 +143,7 @@ Thank you.`;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
+      <StructuredData data={schemas} />
       <Navbar />
 
       {/* Fleet Hero Banner */}

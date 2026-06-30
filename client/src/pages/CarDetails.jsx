@@ -20,6 +20,12 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { api } from '../services/api';
 import { WHATSAPP_NUMBER } from '../constants/contact';
+import StructuredData from '../components/StructuredData';
+import {
+  generateWebPageSchema,
+  generateVehicleSchema,
+  generateBreadcrumbSchema
+} from '../utils/schemaGenerator';
 
 export default function CarDetails() {
   const { slug } = useParams();
@@ -34,6 +40,32 @@ export default function CarDetails() {
     phone: '',
     date: ''
   });
+
+  const origin = window.location.origin;
+  const url = window.location.href;
+
+  const webpageSchema = vehicle
+    ? generateWebPageSchema(
+        'ItemPage',
+        url,
+        `${vehicle.name.trim()} Rental | Renuka Travels`,
+        vehicle.description || `Rent premium ${vehicle.name.trim()} from Renuka Travels. Comfort, safety, and transparent pricing.`
+      )
+    : null;
+
+  const vehicleSchema = vehicle
+    ? generateVehicleSchema(vehicle, origin)
+    : null;
+
+  const breadcrumbSchema = vehicle
+    ? generateBreadcrumbSchema([
+        { name: 'Home', item: `${origin}/` },
+        { name: 'Vehicles', item: `${origin}/cars` },
+        { name: vehicle.name.trim(), item: url }
+      ])
+    : null;
+
+  const schemas = [webpageSchema, vehicleSchema, breadcrumbSchema].filter(Boolean);
 
   const fetchVehicleDetails = async () => {
     setIsLoading(true);
@@ -198,6 +230,7 @@ Thank you.`;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased">
+      <StructuredData data={schemas} />
       <Navbar />
 
       {/* Main Details Grid */}
