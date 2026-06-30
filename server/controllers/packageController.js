@@ -3,6 +3,20 @@ import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 import { uploadSingleImage } from '../utils/cloudinaryHelper.js';
 
+function normalizeGallery(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      return [value];
+    }
+  }
+  return [value];
+}
+
 /**
  * Public catalog listing: Returns only ACTIVE and NON-DELETED packages.
  */
@@ -211,8 +225,13 @@ export const updatePackage = catchAsync(async (req, res, next) => {
     active,
     pricing,
     highlights,
-    existingGallery // List of existing image URLs to keep (sent as string/array)
+    existingGallery,
+    galleryStructure
   } = req.body;
+
+  // Diagnostic logs to trace exact type and payload content
+  console.log('[DEBUG CONTROLLER] raw existingGallery type:', typeof existingGallery, 'value:', existingGallery);
+  console.log('[DEBUG CONTROLLER] raw galleryStructure type:', typeof galleryStructure, 'value:', galleryStructure);
 
   // Parse pricing
   let parsedPricing = {};
@@ -252,22 +271,15 @@ export const updatePackage = catchAsync(async (req, res, next) => {
     }
   }
 
-  // Parse existing gallery images
+  // Parse existing gallery images using the helper
   let keptGallery = [];
   if (existingGallery) {
-    if (typeof existingGallery === 'string') {
-      try {
-        keptGallery = JSON.parse(existingGallery);
-      } catch (e) {
-        keptGallery = [existingGallery];
-      }
-    } else if (Array.isArray(existingGallery)) {
-      keptGallery = existingGallery;
-    }
+    keptGallery = normalizeGallery(existingGallery);
   } else {
-    // If not supplied, keep everything
-    keptGallery = pkg.gallery;
+    // If not supplied, keep everything from the database
+    keptGallery = normalizeGallery(pkg.gallery);
   }
+  console.log('[DEBUG CONTROLLER] normalized keptGallery type:', Array.isArray(keptGallery) ? 'array' : typeof keptGallery, 'value:', keptGallery);
 
   // Upload new gallery images
   let newGalleryUrls = [];
@@ -282,7 +294,6 @@ export const updatePackage = catchAsync(async (req, res, next) => {
   }
 
   // Merge/rebuild gallery structure
-  const { galleryStructure } = req.body;
   console.log('[DEBUG CONTROLLER] Received galleryStructure in updatePackage:', galleryStructure);
   let finalGallery = [];
 
