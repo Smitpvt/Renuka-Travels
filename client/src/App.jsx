@@ -8,6 +8,7 @@ import CarDetails from './pages/CarDetails';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+import ScrollToTop from './components/ScrollToTop';
 
 // Admin panel components & contexts
 import Login from './admin/Login';
@@ -30,6 +31,7 @@ export default function App() {
     <ToastProvider>
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <WhatsAppWrapper />
           <Routes>
             {/* Public Website Routes */}

@@ -227,7 +227,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Right Content: Booking Form */}
-        <div className="lg:col-span-5 w-full flex justify-center z-10">
+        <div id="book-now" className="lg:col-span-5 w-full flex justify-center z-10 scroll-mt-24">
           <BookingForm isNested={true} />
         </div>
 
