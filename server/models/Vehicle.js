@@ -80,7 +80,7 @@ const vehicleSchema = new mongoose.Schema(
         type: String,
         default: '',
       },
-      minimumKm: {
+      permit: {
         type: Number,
         default: 0,
       },

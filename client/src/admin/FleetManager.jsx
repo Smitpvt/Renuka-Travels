@@ -49,7 +49,7 @@ export default function FleetManager() {
   const [pricingNonAc, setPricingNonAc] = useState('');
   const [pricingLabel, setPricingLabel] = useState('Per KM');
   const [pricingDescription, setPricingDescription] = useState('');
-  const [pricingMinimumKm, setPricingMinimumKm] = useState('300');
+  const [pricingPermit, setPricingPermit] = useState('300');
   const [pricingDriverAllowance, setPricingDriverAllowance] = useState('500');
   const [pricingTollIncluded, setPricingTollIncluded] = useState(false);
   const [pricingParkingIncluded, setPricingParkingIncluded] = useState(false);
@@ -118,7 +118,7 @@ export default function FleetManager() {
     setPricingNonAc('');
     setPricingLabel('Per KM');
     setPricingDescription('');
-    setPricingMinimumKm('300');
+    setPricingPermit('300');
     setPricingDriverAllowance('500');
     setPricingTollIncluded(false);
     setPricingParkingIncluded(false);
