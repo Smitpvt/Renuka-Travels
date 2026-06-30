@@ -3,6 +3,20 @@ import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 import { uploadSingleImage } from '../utils/cloudinaryHelper.js';
 
+function normalizeGallery(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      return [value];
+    }
+  }
+  return [value];
+}
+
 /**
  * Public catalog listing: Returns only ACTIVE and NON-DELETED vehicles.
  */
@@ -193,6 +207,8 @@ export const updateVehicle = catchAsync(async (req, res, next) => {
     pricing
   } = req.body;
 
+  console.log('[DEBUG CONTROLLER] raw existingGallery type in updateVehicle:', typeof existingGallery, 'value:', existingGallery);
+
   // Cover image upload if a new file is attached
   let imageUrl = vehicle.image;
   if (req.files && req.files.image && req.files.image.length > 0) {
@@ -205,22 +221,15 @@ export const updateVehicle = catchAsync(async (req, res, next) => {
     imageUrl = req.body.image;
   }
 
-  // Parse existing gallery images to keep
+  // Parse existing gallery images to keep using the helper
   let keptGallery = [];
   if (existingGallery) {
-    if (typeof existingGallery === 'string') {
-      try {
-        keptGallery = JSON.parse(existingGallery);
-      } catch (e) {
-        keptGallery = [existingGallery];
-      }
-    } else if (Array.isArray(existingGallery)) {
-      keptGallery = existingGallery;
-    }
+    keptGallery = normalizeGallery(existingGallery);
   } else {
     // If not supplied, keep everything
-    keptGallery = vehicle.gallery || [];
+    keptGallery = normalizeGallery(vehicle.gallery);
   }
+  console.log('[DEBUG CONTROLLER] normalized keptGallery type in updateVehicle:', Array.isArray(keptGallery) ? 'array' : typeof keptGallery, 'value:', keptGallery);
 
   // Upload new gallery images
   let newGalleryUrls = [];
