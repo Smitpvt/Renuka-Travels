@@ -363,7 +363,7 @@ Thank you.`;
                       {(vehicle.pricing?.permit > 0 || vehicle.pricing?.minimumKm > 0) && (
                         <div className="flex justify-between">
                           <span>Permit:</span>
-                          <span className="font-semibold text-[#1E293B]">{vehicle.pricing.permit !== undefined ? vehicle.pricing.permit : vehicle.pricing.minimumKm} KM</span>
+                          <span className="font-semibold text-[#1E293B]">{vehicle.pricing.permit !== undefined ? vehicle.pricing.permit : vehicle.pricing.minimumKm}</span>
                         </div>
                       )}
                       {vehicle.pricing?.driverAllowance > 0 && (
