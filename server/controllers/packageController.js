@@ -261,7 +261,7 @@ export const updatePackage = catchAsync(async (req, res, next) => {
       } catch (e) {
         keptGallery = [existingGallery];
       }
-    } else if (Array.isArray(keptGallery)) {
+    } else if (Array.isArray(existingGallery)) {
       keptGallery = existingGallery;
     }
   } else {
@@ -329,6 +329,7 @@ export const updatePackage = catchAsync(async (req, res, next) => {
   if (active !== undefined) pkg.active = active === 'true' || active === true;
   pkg.image = imageUrl;
   pkg.gallery = finalGallery;
+  pkg.markModified('gallery');
   if (parsedHighlights) pkg.highlights = parsedHighlights;
 
   if (pricing) {
