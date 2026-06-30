@@ -9,9 +9,6 @@ export const packages = [
     featured: true,
     image: "/images/packages/lonavala.jpg",
     gallery: [
-      "/images/packages/lonavala-1.jpg",
-      "/images/packages/lonavala-2.jpg",
-      "/images/packages/lonavala-3.jpg",
     ],
     acPrice: "₹18,000",
     nonAcPrice: "₹16,000",
