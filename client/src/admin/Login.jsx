@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { Eye, EyeOff, Lock, Mail, Loader2, Compass } from 'lucide-react';
+import logo from '../logo/Logo-Photoroom.png';
 import { motion } from 'framer-motion';
 
 export default function Login() {
@@ -47,9 +48,11 @@ export default function Login() {
       >
         {/* Brand Header */}
         <div className="text-center space-y-2 mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-[#F97316] text-white flex items-center justify-center mx-auto shadow-md">
-            <Compass size={24} />
-          </div>
+          <img
+            src={logo}
+            alt="Renuka Travels Logo"
+            className="h-14 w-auto object-contain select-none mx-auto"
+          />
           <h1 className="text-2xl font-bold font-headings text-[#1E293B]">
             Renuka Travels
           </h1>

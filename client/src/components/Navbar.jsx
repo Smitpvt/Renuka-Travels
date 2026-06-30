@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import logo from "../logo/Logo-Photoroom.png";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -48,9 +49,15 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-lg md:text-xl font-extrabold font-headings text-[#1E293B] hover:text-[#F97316] transition-colors tracking-tight flex items-center gap-2"
+            className="font-extrabold font-headings text-[#1E293B] hover:text-[#F97316] transition-colors tracking-tight flex items-center gap-3"
           >
-            <span className="text-[#F97316]"></span> Renuka Travels
+            <img
+              src={logo}
+              alt="Renuka Travels Logo"
+              className="h-10 md:h-12 lg:h-14 w-auto object-contain select-none"
+              loading="eager"
+            />
+            <span className="text-lg md:text-xl font-extrabold">Renuka Travels</span>
           </Link>
 
           {/* Desktop Nav */}
