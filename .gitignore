@@ -26,3 +26,7 @@ server/dist/
 .vscode/
 .idea/
 .DS_Store
+
+# DB Backups and Scratch
+server/backups/
+server/scratch/
