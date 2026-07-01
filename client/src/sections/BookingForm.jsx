@@ -4,6 +4,8 @@ import { Calendar, MapPin, Car } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import Fuse from "fuse.js";
 import { City } from "country-state-city";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { api } from '../services/api';
 import { WHATSAPP_NUMBER } from '../constants/contact';
 
@@ -13,6 +15,26 @@ const locations = [...new Set(indiaCities)];
 const fuse = new Fuse(locations, {
   threshold: 0.35,
 });
+
+// Helper to format Date object into local YYYY-MM-DD string
+const formatDateToYYYYMMDD = (date) => {
+  if (!date || isNaN(date.getTime())) return '';
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+// Helper to parse YYYY-MM-DD string into local Date object
+const parseYYYYMMDDToDate = (dateStr) => {
+  if (!dateStr) return null;
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return null;
+  const [yyyy, mm, dd] = parts.map(Number);
+  const date = new Date(yyyy, mm - 1, dd);
+  return isNaN(date.getTime()) ? null : date;
+};
+
 
 export default function BookingForm({ isNested = false }) {
   const [searchParams, setSearchParams] = useState({
@@ -200,17 +222,24 @@ Thank you.`;
 
           {/* Travel Date */}
           <div>
-            <label className="block text-xs font-bold text-[#1E293B] mb-2 uppercase tracking-wider">Travel Date</label>
+            <label htmlFor="travel-date-picker" className="block text-xs font-bold text-[#1E293B] mb-2 uppercase tracking-wider">Travel Date</label>
             <div className="relative">
-              <Calendar className="absolute left-4 top-3 text-[#F97316]" size={16} />
-              <input
-                type="date"
+              <Calendar className="absolute left-4 top-3 text-[#F97316] z-10 pointer-events-none" size={16} />
+              <DatePicker
+                id="travel-date-picker"
                 name="date"
                 required
-                min={new Date().toISOString().split('T')[0]}
-                value={searchParams.date}
-                onChange={handleInputChange}
+                selected={searchParams.date ? parseYYYYMMDDToDate(searchParams.date) : null}
+                onChange={(date) => {
+                  const formatted = date ? formatDateToYYYYMMDD(date) : '';
+                  setSearchParams((prev) => ({ ...prev, date: formatted }));
+                }}
+                minDate={new Date()}
+                placeholderText="Select Travel Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full pl-11 pr-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-2xl text-sm text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:bg-white transition-all"
+                wrapperClassName="w-full"
+                aria-label="Travel Date"
               />
             </div>
           </div>
