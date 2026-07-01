@@ -142,15 +142,17 @@ export default function Packages() {
       </section>
 
       {/* Category Tabs */}
-      <section className="py-10 max-w-[1280px] mx-auto px-6">
-        <div className="flex flex-wrap items-center justify-center gap-3">
+      <section className="py-6 max-w-[1280px] mx-auto px-6">
+        <div className="grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-center gap-3 w-full max-w-md md:max-w-none mx-auto">
           {categories.map((cat) => (
             <motion.button
               key={cat}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setSelectedCat(cat)}
-              className={`px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${selectedCat === cat
+              className={`flex items-center justify-center text-center w-full min-h-[48px] px-4 py-3 rounded-full text-xs font-bold transition-all duration-300 md:w-auto md:px-6 md:py-2.5 ${
+                cat === 'Corporate Tours' ? 'col-span-2 md:col-span-1' : ''
+              } ${selectedCat === cat
                   ? 'bg-[#F97316] text-white shadow-md'
                   : 'bg-white text-[#1E293B] border border-slate-200 hover:bg-orange-50'
                 }`}
