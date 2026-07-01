@@ -558,7 +558,7 @@ Thank you.`;
                       <h3 className="text-sm font-bold text-[#1E293B] font-headings mt-1 line-clamp-1">{relVehicle.name}</h3>
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                      <span className="text-xs font-bold text-[#F97316]">{relVehicle.seats}</span>
+                      <span className="text-xs font-bold text-[#F97316]">{relVehicle.seats} seater</span>
                       <Link
                         to={`/cars/${relVehicle.slug}`}
                         className="flex items-center gap-0.5 text-xs font-bold text-[#1E293B] hover:text-[#F97316] transition-colors"
