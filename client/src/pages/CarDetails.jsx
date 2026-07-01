@@ -13,7 +13,8 @@ import {
   Calendar,
   Compass,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
@@ -30,6 +31,14 @@ import {
 export default function CarDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/cars');
+    }
+  };
   const [vehicle, setVehicle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -236,6 +245,18 @@ Thank you.`;
       {/* Main Details Grid */}
       <section className="pt-28 md:pt-36 pb-12 md:pb-20 max-w-[1280px] mx-auto px-6">
         
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={handleBackClick}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-700 hover:text-[#F97316] hover:border-orange-200 transition-all duration-300 shadow-sm hover:shadow-md min-h-[38px] focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+            aria-label="Go back"
+          >
+            <ArrowLeft size={16} className="text-[#F97316]" />
+            <span>Back</span>
+          </button>
+        </div>
+
         {/* Navigation Breadcrumb */}
         <div className="text-xs text-slate-400 mb-8 flex items-center gap-1.5">
           <Link to="/" className="hover:text-[#F97316]">Home</Link>

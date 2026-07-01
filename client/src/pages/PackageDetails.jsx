@@ -12,7 +12,8 @@ import {
   Clock,
   Compass,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
@@ -32,6 +33,14 @@ import Hero3 from '../heros/Hero3.jpg';
 export default function PackageDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/packages');
+    }
+  };
   const [pkg, setPkg] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -248,8 +257,20 @@ Thank you.`;
       <StructuredData data={schemas} />
       <Navbar />
 
+      {/* Back Button */}
+      <div className="pt-28 md:pt-36 pb-4 max-w-[1280px] mx-auto px-6">
+        <button
+          onClick={handleBackClick}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-700 hover:text-[#F97316] hover:border-orange-200 transition-all duration-300 shadow-sm hover:shadow-md min-h-[38px] focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+          aria-label="Go back"
+        >
+          <ArrowLeft size={16} className="text-[#F97316]" />
+          <span>Back</span>
+        </button>
+      </div>
+
       {/* Hero Banner */}
-      <section className="relative h-[55vh] min-h-[380px] bg-slate-900 text-white overflow-hidden pt-20">
+      <section className="relative h-[55vh] min-h-[380px] bg-slate-900 text-white overflow-hidden">
         <img
           src={heroImage}
           alt={pkg.title}
