@@ -174,7 +174,7 @@ export default function Hero() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-3 w-full max-w-sm mx-auto md:flex md:flex-wrap md:justify-start md:gap-4 md:w-auto md:mx-0">
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-3 w-full max-w-sm mx-auto md:flex md:flex-row md:flex-wrap md:justify-start md:gap-4 md:w-auto md:mx-0 md:max-w-none">
             <motion.a
               href="#book-now"
               whileHover={{ y: -2 }}
