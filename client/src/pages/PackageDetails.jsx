@@ -377,7 +377,7 @@ Thank you.`;
             {Array.isArray(pkg.gallery) && pkg.gallery.length > 0 && (
               <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/55 shadow-sm space-y-4">
                 <h2 className="text-xl font-bold font-headings text-[#1E293B]">Destination Gallery</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-none pb-2 md:grid md:grid-cols-3 gap-4">
                   {pkg.gallery.map((item, index) => {
                     console.log(`[DEBUG RENDER] gallery item at index ${index}:`, JSON.stringify(item));
                     const isObject = typeof item === 'object' && item !== null;
@@ -385,7 +385,7 @@ Thank you.`;
                     const title = isObject ? item.title : '';
 
                     return (
-                      <div key={index} className="flex flex-col">
+                      <div key={index} className="basis-[80%] min-w-[200px] max-w-[300px] flex-shrink-0 snap-start flex flex-col md:basis-auto md:w-auto md:min-w-0 md:max-w-none md:flex-shrink-0">
                         <div className="h-44 rounded-2xl overflow-hidden bg-slate-50">
                           <img
                             src={imageUrl}
