@@ -96,6 +96,10 @@ export const api = {
   deleteVehicle: (id) => request(`/vehicles/${id}`, {
     method: 'DELETE',
   }),
+  reorderVehicles: (payload) => request('/vehicles/reorder', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  }),
 
   // Admin Testimonials CRUD
   getAdminTestimonials: (search = '', page = 1, limit = 10) => 

@@ -9,8 +9,120 @@ import {
   Edit2, 
   Trash2, 
   Loader2,
-  X
+  X,
+  GripVertical
 } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableVehicleRow({ vh, isReorderMode, openEditModal, triggerDeleteConfirm }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: vh._id, disabled: !isReorderMode });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    backgroundColor: isDragging ? 'rgb(248 250 252)' : undefined,
+    zIndex: isDragging ? 50 : 'auto',
+    position: isDragging ? 'relative' : 'static',
+  };
+
+  return (
+    <tr 
+      ref={setNodeRef} 
+      style={style} 
+      className={`hover:bg-slate-50/40 transition-colors ${isDragging ? 'bg-slate-50 border border-orange-200 shadow-sm' : ''}`}
+    >
+      {isReorderMode && (
+        <td className="px-6 py-3 w-10 text-center">
+          <button
+            type="button"
+            {...attributes}
+            {...listeners}
+            className="p-1 text-slate-400 hover:text-slate-600 cursor-grab active:cursor-grabbing"
+            title="Drag to reorder"
+          >
+            <GripVertical size={14} />
+          </button>
+        </td>
+      )}
+      <td className="px-6 py-3">
+        <img 
+          src={vh.image} 
+          alt="" 
+          className="w-12 h-10 object-cover rounded-xl border border-slate-100 bg-slate-50"
+          onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=150&fit=crop'; }}
+        />
+      </td>
+      <td className="px-6 py-4">
+        <p className="font-bold leading-tight">{vh.name}</p>
+        {vh.registrationNumber && <span className="text-[9px] text-slate-400 uppercase tracking-wide">{vh.registrationNumber}</span>}
+      </td>
+      <td className="px-6 py-4 font-light">{vh.type}</td>
+      <td className="px-6 py-4 font-light">{vh.seats} Seats ({vh.ac ? 'AC' : 'Non-AC'})</td>
+      <td className="px-6 py-4 font-light">{vh.fuelType}</td>
+      <td className="px-6 py-4">
+        <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold ${
+          vh.status === 'Available' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+          vh.status === 'Booked' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+          'bg-amber-50 text-amber-600 border border-amber-100'
+        }`}>
+          {vh.status}
+        </span>
+      </td>
+      <td className="px-6 py-4">
+        <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold ${
+          vh.active ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200'
+        }`}>
+          {vh.active ? 'Active' : 'Inactive'}
+        </span>
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => openEditModal(vh)}
+            disabled={isReorderMode}
+            className="p-2 text-slate-400 hover:text-[#F97316] hover:bg-orange-50 rounded-xl transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400"
+            title={isReorderMode ? "Cannot edit during reordering" : "Edit vehicle"}
+          >
+            <Edit2 size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={() => triggerDeleteConfirm(vh._id)}
+            disabled={isReorderMode}
+            className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400"
+            title={isReorderMode ? "Cannot delete during reordering" : "Remove vehicle"}
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+}
 
 export default function FleetManager() {
   const [vehicles, setVehicles] = useState([]);
@@ -71,11 +183,29 @@ export default function FleetManager() {
 
   const { showToast } = useToast();
 
+  const [originalVehicles, setOriginalVehicles] = useState([]);
+  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [hasOrderChanged, setHasOrderChanged] = useState(false);
+  const [isReorderingLoading, setIsReorderingLoading] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const loadVehicles = async () => {
     setIsLoading(true);
     try {
       const data = await api.getAdminVehicles(search, page, limit);
-      setVehicles(data.vehicles || []);
+      const loaded = data.vehicles || [];
+      setVehicles(loaded);
+      setOriginalVehicles(loaded);
       setTotal(data.total || 0);
       setTotalPages(data.pages || 1);
     } catch (err) {
@@ -86,8 +216,75 @@ export default function FleetManager() {
   };
 
   useEffect(() => {
-    loadVehicles();
+    if (!isReorderMode) {
+      loadVehicles();
+    }
   }, [page, limit]);
+
+  const enterReorderMode = async () => {
+    setIsReorderMode(true);
+    setHasOrderChanged(false);
+    setIsLoading(true);
+    try {
+      const data = await api.getAdminVehicles('', 1, 1000);
+      const loaded = data.vehicles || [];
+      setVehicles(loaded);
+      setOriginalVehicles(loaded);
+    } catch (err) {
+      showToast(err.message || 'Failed to load full fleet for reordering.', 'error');
+      setIsReorderMode(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancelOrder = () => {
+    setHasOrderChanged(false);
+    setIsReorderMode(false);
+    loadVehicles();
+  };
+
+  const handleSaveOrder = async () => {
+    setIsReorderingLoading(true);
+    try {
+      const payload = vehicles.map((v, idx) => ({
+        _id: v._id,
+        displayOrder: idx
+      }));
+      await api.reorderVehicles(payload);
+      showToast('Vehicles reordered successfully.', 'success');
+      setHasOrderChanged(false);
+      setIsReorderMode(false);
+      await loadVehicles();
+    } catch (err) {
+      showToast(err.message || 'Failed to update vehicles order.', 'error');
+      setVehicles(originalVehicles);
+      setHasOrderChanged(false);
+    } finally {
+      setIsReorderingLoading(false);
+    }
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const activeVehicle = vehicles.find(v => v._id === active.id);
+    const overVehicle = vehicles.find(v => v._id === over.id);
+
+    if (!activeVehicle || !overVehicle) return;
+
+    if (activeVehicle.type !== overVehicle.type) {
+      return;
+    }
+
+    const oldIndex = vehicles.findIndex(v => v._id === active.id);
+    const newIndex = vehicles.findIndex(v => v._id === over.id);
+
+    const updatedVehicles = arrayMove(vehicles, oldIndex, newIndex);
+    setVehicles(updatedVehicles);
+    setHasOrderChanged(true);
+  };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -324,6 +521,8 @@ export default function FleetManager() {
       }
 
       setIsFormOpen(false);
+      setIsReorderMode(false);
+      setHasOrderChanged(false);
       loadVehicles();
     } catch (err) {
       showToast(err.message || 'Form submission failed.', 'error');
@@ -342,6 +541,8 @@ export default function FleetManager() {
       await api.deleteVehicle(deleteId);
       showToast('Vehicle removed from active fleet.', 'success');
       setIsDeleteOpen(false);
+      setIsReorderMode(false);
+      setHasOrderChanged(false);
       loadVehicles();
     } catch (err) {
       showToast(err.message || 'Failed to delete vehicle.', 'error');
@@ -360,25 +561,65 @@ export default function FleetManager() {
               type="text"
               placeholder="Search vehicles by name, type, fuel or plate..."
               value={search}
+              disabled={isReorderMode}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+              className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-[#F97316] disabled:opacity-50 disabled:bg-slate-50"
             />
           </div>
           <button 
             type="submit"
-            className="px-5 py-2.5 bg-[#1E293B] hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-colors"
+            disabled={isReorderMode}
+            className="px-5 py-2.5 bg-[#1E293B] hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-colors disabled:opacity-50 disabled:hover:bg-[#1E293B]"
           >
             Search
           </button>
         </form>
 
-        <button
-          onClick={openAddModal}
-          className="flex items-center gap-1.5 px-5 py-2.5 bg-[#F97316] hover:bg-orange-600 text-white rounded-2xl text-xs font-bold transition-all shadow-md self-start md:self-auto"
-        >
-          <Plus size={16} />
-          <span>Add Vehicle</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+          {isReorderMode ? (
+            <>
+              <button
+                type="button"
+                onClick={handleCancelOrder}
+                disabled={isReorderingLoading}
+                className="px-5 py-2.5 border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-2xl text-xs font-bold transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveOrder}
+                disabled={!hasOrderChanged || isReorderingLoading}
+                className={`flex items-center gap-1.5 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all shadow-md ${
+                  hasOrderChanged && !isReorderingLoading
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    : 'bg-slate-100 text-slate-400 border border-slate-200 shadow-none cursor-not-allowed'
+                }`}
+              >
+                {isReorderingLoading && <Loader2 className="animate-spin" size={14} />}
+                <span>Save Order</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={enterReorderMode}
+                className="flex items-center gap-1.5 px-5 py-2.5 bg-slate-700 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all shadow-md"
+              >
+                <span>Reorder Fleet</span>
+              </button>
+              <button
+                type="button"
+                onClick={openAddModal}
+                className="flex items-center gap-1.5 px-5 py-2.5 bg-[#F97316] hover:bg-orange-600 text-white rounded-2xl text-xs font-bold transition-all shadow-md"
+              >
+                <Plus size={16} />
+                <span>Add Vehicle</span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Fleet Table */}
@@ -393,6 +634,7 @@ export default function FleetManager() {
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-slate-50/50 text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-100">
+                  {isReorderMode && <th className="px-6 py-3.5 w-10 text-center"></th>}
                   <th className="px-6 py-3.5 w-16">Image</th>
                   <th className="px-6 py-3.5">Name</th>
                   <th className="px-6 py-3.5">Type</th>
@@ -403,61 +645,26 @@ export default function FleetManager() {
                   <th className="px-6 py-3.5 w-24">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-[#1E293B]">
-                {vehicles.map((vh) => (
-                  <tr key={vh._id} className="hover:bg-slate-50/40 transition-colors">
-                    <td className="px-6 py-3">
-                      <img 
-                        src={vh.image} 
-                        alt="" 
-                        className="w-12 h-10 object-cover rounded-xl border border-slate-100 bg-slate-50"
-                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=150&fit=crop'; }}
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="font-bold leading-tight">{vh.name}</p>
-                      {vh.registrationNumber && <span className="text-[9px] text-slate-400 uppercase tracking-wide">{vh.registrationNumber}</span>}
-                    </td>
-                    <td className="px-6 py-4 font-light">{vh.type}</td>
-                    <td className="px-6 py-4 font-light">{vh.seats} Seats ({vh.ac ? 'AC' : 'Non-AC'})</td>
-                    <td className="px-6 py-4 font-light">{vh.fuelType}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                        vh.status === 'Available' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
-                        vh.status === 'Booked' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
-                        'bg-amber-50 text-amber-600 border border-amber-100'
-                      }`}>
-                        {vh.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                        vh.active ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200'
-                      }`}>
-                        {vh.active ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => openEditModal(vh)}
-                          className="p-2 text-slate-400 hover:text-[#F97316] hover:bg-orange-50 rounded-xl transition-all"
-                          title="Edit vehicle"
-                        >
-                          <Edit2 size={14} />
-                        </button>
-                        <button
-                          onClick={() => triggerDeleteConfirm(vh._id)}
-                          className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
-                          title="Remove vehicle"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <tbody className="divide-y divide-slate-100 text-[#1E293B]">
+                  {['SUV / Cars', 'Mini Bus', 'Luxury Bus'].map(cat => {
+                    const catVehicles = vehicles.filter(v => v.type === cat);
+                    return (
+                      <SortableContext key={cat} items={catVehicles.map(v => v._id)} strategy={verticalListSortingStrategy}>
+                        {catVehicles.map((vh) => (
+                          <SortableVehicleRow
+                            key={vh._id}
+                            vh={vh}
+                            isReorderMode={isReorderMode}
+                            openEditModal={openEditModal}
+                            triggerDeleteConfirm={triggerDeleteConfirm}
+                          />
+                        ))}
+                      </SortableContext>
+                    );
+                  })}
+                </tbody>
+              </DndContext>
             </table>
           ) : (
             <div className="text-center py-20 text-slate-400 font-light">
@@ -467,7 +674,7 @@ export default function FleetManager() {
         </div>
 
         {/* Pagination Footer */}
-        {vehicles.length > 0 && (
+        {vehicles.length > 0 && !isReorderMode && (
           <div className="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500">
             <div className="flex items-center gap-2">
               <span>Show</span>
