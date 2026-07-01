@@ -174,15 +174,15 @@ Thank you.`;
       </section>
 
       {/* Segmented Category Filters */}
-      <section className="py-10 max-w-[1280px] mx-auto px-6">
-        <div className="flex flex-wrap items-center justify-center gap-3">
+      <section className="py-6 max-w-[1280px] mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-lg md:max-w-4xl lg:max-w-5xl mx-auto">
           {categoryTabs.map((tab) => (
             <motion.button
               key={tab.id}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setSelectedTab(tab.id)}
-              className={`px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${
+              className={`flex items-center justify-center text-center w-full min-h-[48px] px-4 py-3 rounded-full text-xs font-bold transition-all duration-300 ${
                 selectedTab === tab.id
                   ? 'bg-[#F97316] text-white shadow-md'
                   : 'bg-white text-[#1E293B] border border-slate-200 hover:bg-orange-50'
