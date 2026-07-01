@@ -601,47 +601,51 @@ Thank you.`;
           <h2 className="text-2xl font-bold font-headings text-[#1E293B] mt-1">Related Tour Packages</h2>
         </div>
         {Array.isArray(relatedPackages) && relatedPackages.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 -mx-6 px-6 md:mx-0 md:px-0">
             {relatedPackages.map((relPkg) => (
-              <motion.div
+              <div
                 key={relPkg.slug}
-                whileHover={{ y: -4 }}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-200/55 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                className="w-[85vw] sm:w-[350px] md:w-[calc(33.333%-16px)] flex-shrink-0 snap-start flex"
               >
-                <div className="h-44 relative bg-slate-50">
-                  <img
-                    src={relPkg.image}
-                    alt={relPkg.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&fit=crop'; }}
-                  />
-                </div>
-                <div className="p-5 flex-grow flex flex-col justify-between gap-4">
-                  <div>
-                    <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
-                      <Calendar size={10} className="text-[#F97316]" />
-                      {relPkg.duration}
-                    </span>
-                    <h3 className="text-sm font-bold text-[#1E293B] font-headings mt-1 line-clamp-1">
-                      {relPkg.title}
-                    </h3>
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="bg-white rounded-3xl overflow-hidden border border-slate-200/55 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between w-full"
+                >
+                  <div className="h-44 relative bg-slate-50">
+                    <img
+                      src={relPkg.image}
+                      alt={relPkg.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&fit=crop'; }}
+                    />
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                    <span className="text-xs font-bold text-[#F97316]">
-                      {relPkg.pricing?.customQuote 
-                        ? 'Custom Quote' 
-                        : (relPkg.pricing?.ac ? `₹${relPkg.pricing.ac.toLocaleString('en-IN')}` : 'Custom Quote')}
-                    </span>
-                    <Link
-                      to={`/packages/${relPkg.slug}`}
-                      className="flex items-center gap-0.5 text-xs font-bold text-[#1E293B] hover:text-[#F97316] transition-colors"
-                    >
-                      <span>View</span>
-                      <ChevronRight size={14} />
-                    </Link>
+                  <div className="p-5 flex-grow flex flex-col justify-between gap-4">
+                    <div>
+                      <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
+                        <Calendar size={10} className="text-[#F97316]" />
+                        {relPkg.duration}
+                      </span>
+                      <h3 className="text-sm font-bold text-[#1E293B] font-headings mt-1 line-clamp-1">
+                        {relPkg.title}
+                      </h3>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                      <span className="text-xs font-bold text-[#F97316]">
+                        {relPkg.pricing?.customQuote 
+                          ? 'Custom Quote' 
+                          : (relPkg.pricing?.ac ? `₹${relPkg.pricing.ac.toLocaleString('en-IN')}` : 'Custom Quote')}
+                      </span>
+                      <Link
+                        to={`/packages/${relPkg.slug}`}
+                        className="flex items-center gap-0.5 text-xs font-bold text-[#1E293B] hover:text-[#F97316] transition-colors"
+                      >
+                        <span>View</span>
+                        <ChevronRight size={14} />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             ))}
           </div>
         )}
