@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { api } from '../services/api';
@@ -22,8 +22,13 @@ const categoryTabs = [
 ];
 
 export default function Cars() {
+  const navigate = useNavigate();
   const origin = window.location.origin;
   const url = window.location.href;
+
+  const handleCardClick = (slug) => {
+    navigate(`/cars/${slug}`);
+  };
 
   const webpageSchema = generateWebPageSchema(
     'CollectionPage',
@@ -252,7 +257,17 @@ Thank you.`;
                   visible: { opacity: 1, y: 0 }
                 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-200/55 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                onClick={() => handleCardClick(vehicle.slug)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick(vehicle.slug);
+                  }
+                }}
+                role="link"
+                tabIndex={0}
+                aria-label={`View details for ${vehicle.name}`}
+                className="cursor-pointer bg-white rounded-3xl overflow-hidden border border-slate-200/55 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]"
               >
                 {/* Image */}
                 <div className="h-[200px] relative overflow-hidden bg-slate-100">
@@ -310,19 +325,25 @@ Thank you.`;
                   {/* Buttons Layout */}
                   <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100">
                     <button
-                      onClick={() => handleRequestQuote(vehicle.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRequestQuote(vehicle.name);
+                      }}
                       className="py-2.5 rounded-full border border-[#F97316] text-[#F97316] hover:bg-[#F97316]/10 text-xs font-bold transition-all duration-300 text-center shadow-sm"
                     >
                       Request Quote
                     </button>
 
-                    <Link
-                      to={`/cars/${vehicle.slug}`}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCardClick(vehicle.slug);
+                      }}
                       className="py-2.5 rounded-full bg-[#F97316] text-white hover:bg-orange-600 text-xs font-bold transition-all duration-300 text-center flex items-center justify-center gap-1 shadow-md hover:shadow-lg"
                     >
                       <span>View Details</span>
                       <ChevronRight size={14} />
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </motion.div>

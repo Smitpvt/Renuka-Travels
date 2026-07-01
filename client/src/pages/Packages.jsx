@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -17,8 +17,13 @@ import {
 const categories = ['All', 'Weekend Trips', 'Pilgrimage', 'Family Tours', 'Corporate Tours'];
 
 export default function Packages() {
+  const navigate = useNavigate();
   const origin = window.location.origin;
   const url = window.location.href;
+
+  const handleCardClick = (slug) => {
+    navigate(`/packages/${slug}`);
+  };
 
   const webpageSchema = generateWebPageSchema(
     'CollectionPage',
@@ -215,7 +220,17 @@ export default function Packages() {
                   visible: { opacity: 1, y: 0 }
                 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-200/55 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                onClick={() => handleCardClick(pkg.slug)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick(pkg.slug);
+                  }
+                }}
+                role="link"
+                tabIndex={0}
+                aria-label={`View details for ${pkg.title}`}
+                className="cursor-pointer bg-white rounded-3xl overflow-hidden border border-slate-200/55 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]"
               >
                 {/* Image */}
                 <div className="h-[220px] relative overflow-hidden bg-slate-50">
@@ -283,7 +298,10 @@ export default function Packages() {
                         {pkg.pricing?.nonAc && (
                           <div className="flex items-center bg-slate-100 rounded-full p-1 w-fit">
                             <button
-                              onClick={() => setPriceType('ac')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPriceType('ac');
+                              }}
                               className={`px-2.5 py-1 text-[9px] font-bold rounded-full transition-all ${
                                 priceType === 'ac' ? 'bg-[#F97316] text-white' : 'text-slate-500'
                               }`}
@@ -291,7 +309,10 @@ export default function Packages() {
                               AC
                             </button>
                             <button
-                              onClick={() => setPriceType('nonac')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPriceType('nonac');
+                              }}
                               className={`px-2.5 py-1 text-[9px] font-bold rounded-full transition-all ${
                                 priceType === 'nonac' ? 'bg-[#F97316] text-white' : 'text-slate-500'
                               }`}
@@ -302,13 +323,16 @@ export default function Packages() {
                         )}
                       </div>
                     )}
-                    <Link
-                      to={`/packages/${pkg.slug}`}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCardClick(pkg.slug);
+                      }}
                       className="w-full px-5 py-2.5 bg-[#F97316] border border-[#F97316] text-white text-xs font-bold rounded-full hover:bg-transparent hover:text-[#F97316] transition-all duration-300 flex items-center justify-center gap-1"
                     >
                       <span>View Details</span>
                       <ChevronRight size={12} />
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </motion.div>
