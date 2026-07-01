@@ -12,6 +12,7 @@ import {
   generateOrganizationSchema,
   generateBreadcrumbSchema
 } from '../utils/schemaGenerator';
+import AboutUsImg from '../places/About_us.jpeg';
 
 export default function About() {
   const origin = window.location.origin;
@@ -95,7 +96,7 @@ export default function About() {
             className="relative rounded-3xl overflow-hidden shadow-lg border border-slate-100/60 aspect-[4/3]"
           >
             <img
-              src="/images/renuka_fleet.png"
+              src={AboutUsImg}
               alt="Renuka Travels Fleet Showcase"
               className="w-full h-full object-cover"
             />
