@@ -174,22 +174,22 @@ export default function Hero() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-3 w-full max-w-sm mx-auto md:flex md:flex-wrap md:justify-start md:gap-4 md:w-auto md:mx-0">
             <motion.a
               href="#book-now"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-[#F97316] text-white px-8 py-3.5 rounded-full font-semibold text-sm shadow-md hover:bg-orange-600 transition-all flex items-center gap-2"
+              className="bg-[#F97316] text-white px-4 py-2.5 md:px-8 md:py-3.5 rounded-full font-semibold text-xs md:text-sm shadow-md hover:bg-orange-600 transition-all flex items-center justify-center gap-1.5 md:gap-2 w-full md:w-auto min-h-[44px] md:min-h-0"
             >
               Book Your Ride
               <ChevronRight size={16} />
             </motion.a>
 
-            <Link to="/packages">
+            <Link to="/packages" className="w-full md:w-auto">
               <motion.button
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white border border-slate-200 px-8 py-3.5 rounded-full font-semibold text-sm text-[#1E293B] hover:bg-slate-50 shadow-sm transition-all"
+                className="bg-white border border-slate-200 px-4 py-2.5 md:px-8 md:py-3.5 rounded-full font-semibold text-xs md:text-sm text-[#1E293B] hover:bg-slate-50 shadow-sm transition-all w-full md:w-auto min-h-[44px] md:min-h-0 flex items-center justify-center text-center"
               >
                 Explore Packages
               </motion.button>
